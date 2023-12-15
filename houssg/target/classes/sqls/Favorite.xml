@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ssg.com.houssg.dao.FavoriteDao">
+	<insert id="addFavorite">
+		INSERT INTO favorite (id,accom_number)
+		VALUES (#{id},#{accomNumber})
+	</insert>
+	
+	<delete id="deleteFavorite">
+		DELETE FROM favorite
+		WHERE id = #{id} and accom_number=#{accomNumber}
+	</delete>
+	<!-- 숙소명, 평균별점, 숙소번호, 주소 -->
+	<select id="getMyFavorite" parameterType="java.lang.String" resultType="ssg.com.houssg.dto.FavoriteParam">
+	    SELECT f.*, a.accom_name, a.accom_address, ROUND(AVG(r.review_rating), 1) as avgRating
+		FROM favorite f
+		LEFT JOIN review r ON r.accom_number = f.accom_number
+		JOIN accommodation a ON a.accom_number = f.accom_number
+		WHERE f.id = #{id}
+		GROUP BY a.accom_number
+	</select>
+	
+	<select id="roomGet" resultType="java.lang.Integer">
+		SELECT
+	    CASE
+	        WHEN COUNT(*) > 0 THEN 1
+	        ELSE 0
+	    END AS result
+		FROM favorite
+		WHERE accom_number = #{accomNumber} AND id = #{id}
+	</select>
+	
+	<select id="isIdDuplicate" parameterType="ssg.com.houssg.dto.FavoriteDto" resultType="int">
+		SELECT count(*)
+		FROM favorite
+		WHERE accom_number = #{accomNumber} AND id = #{id}
+	</select>
+
+</mapper>

@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ssg.com.houssg.dao.ReservationDao">
+
+	<!-- 현재 날짜 기준 객실 별 예약현황 조회 -->
+	<select id="getReservationStatus"
+		resultType="ssg.com.houssg.dto.ReservationRoomDto">
+		SELECT date_range.Date AS date,
+		CASE
+		WHEN rooms.room_number
+		IS NOT NULL THEN MAX(rooms.room_availability) -
+		COALESCE(SUM(CASE WHEN
+		reservation.start_date &lt;= date_range.Date AND
+		reservation.end_date >
+		date_range.Date THEN 1 ELSE 0 END), 0)
+		ELSE
+		MAX(rooms.room_availability)
+		END AS availableRooms
+		FROM (
+		SELECT
+		DATE_ADD(CURDATE(), INTERVAL n DAY) AS Date
+		FROM for_count
+		WHERE
+		DATE_ADD(CURDATE(), INTERVAL n DAY) &lt;= LAST_DAY(CURDATE())
+		) AS
+		date_range
+		LEFT JOIN rooms ON rooms.room_number = #{roomNumber}
+		LEFT
+		JOIN reservation ON reservation.room_number = rooms.room_number AND
+		reservation.status IN (0, 1)
+		GROUP BY date_range.Date
+		ORDER BY
+		date_range.Date;
+	</select>
+
+	<!-- 연도 + 월 입력받아서 객실 별 예약현황 조회 -->
+	<select id="getReservationStatusForYearMonth"
+		resultType="ssg.com.houssg.dto.ReservationRoomDto">
+		SELECT date_range.Date AS date,
+		rooms.room_number AS
+		roomNumber,
+		MAX(rooms.room_availability) - COALESCE(SUM(CASE WHEN
+		reservation.start_date &lt;= date_range.Date AND reservation.end_date
+		> date_range.Date THEN
+		1 ELSE 0 END), 0) AS availableRooms
+		FROM (
+		SELECT
+		DATE_FORMAT(CONCAT(#{yearMonth}, '-01'), '%Y-%m-%d') + INTERVAL n DAY
+		AS Date
+		FROM for_count
+		WHERE
+		DATE_FORMAT(DATE_FORMAT(CONCAT(#{yearMonth}, '-01'), '%Y-%m-%d') +
+		INTERVAL n DAY, '%Y-%m') = #{yearMonth}
+		) AS date_range
+		CROSS JOIN rooms
+		LEFT JOIN reservation ON reservation.room_number = rooms.room_number
+		AND reservation.start_date &lt;= date_range.Date AND
+		reservation.end_date
+		> date_range.Date
+		AND reservation.status IN (0, 1)
+		WHERE rooms.room_number = #{roomNumber}
+		GROUP BY date_range.Date,
+		rooms.room_number
+		ORDER BY date_range.Date,
+		rooms.room_number;
+	</select>
+
+	<!-- 결제 전 예약 가능 여부 라스트 체크 -->
+	<select id="lastCheck"
+		resultType="ssg.com.houssg.dto.ReservationRoomDto">
+		SELECT date_range.Date AS date,
+		rooms.room_number AS
+		roomNumber,
+		MAX(rooms.room_availability) - COALESCE(SUM(CASE WHEN
+		reservation.start_date &lt;= date_range.Date AND reservation.end_date
+		> date_range.Date THEN
+		1 ELSE 0 END), 0) AS availableRooms
+		FROM (
+		SELECT
+		DATE_ADD(#{startDate}, INTERVAL n DAY) AS Date
+		FROM for_count
+		WHERE
+		DATE_ADD(#{startDate}, INTERVAL n DAY) BETWEEN #{startDate} AND
+		DATE_SUB(#{endDate}, INTERVAL 1 DAY)
+		) AS date_range
+		CROSS JOIN rooms
+		LEFT JOIN reservation ON reservation.room_number = rooms.room_number
+		AND reservation.start_date &lt;= date_range.Date
+		AND
+		reservation.end_date > date_range.Date
+		AND reservation.status IN (0, 1)
+		WHERE rooms.room_number = #{roomNumber}
+		GROUP BY date_range.Date,
+		rooms.room_number
+		ORDER BY date_range.Date, rooms.room_number;
+	</select>
+
+	<!-- 객실번호로 숙소번호 조회 -->
+	<select id="getAccomNumberByRoomNumber" resultType="int">
+		SELECT
+		accom_number
+		FROM rooms where room_number = #{roomNumber}
+	</select>
+
+	<!-- 쿠폰 정보 조회 -->
+	<select id="getCouponInfo"
+		resultType="ssg.com.houssg.dto.UserCouponDto">
+		SELECT coupon_number, coupon_name, discount
+		FROM user_coupon
+		where id = #{userId} AND is_used = 0
+	</select>
+
+	<!-- 보유 포인트 조회 -->
+	<select id="getUserPoints" resultType="int">
+		SELECT point
+		FROM user
+		WHERE id = #{Id}
+	</select>
+
+	<!-- 예약등록(생성) -->
+	<insert id="enrollReservation"
+		parameterType="ssg.com.houssg.dto.ReservationDto">
+		insert into reservation(reservation_number,
+		reservation_time,
+		id,
+		start_date,
+		end_date,
+		status,
+		nickname,
+		phone_number,
+		room_category,
+		room_price,
+		coupon_number,
+		coupon_name,
+		discount,
+		use_point,
+		total_price,
+		payment_amount,
+		guest_name,
+		guest_phone,
+		accom_number,
+		accom_name,
+		room_number,review_status)
+		values
+		(#{reservationNumber},
+		#{reservationTime}, #{id},
+		#{startDate},#{endDate}, 0,
+		#{nickname},#{phoneNumber},
+		#{roomCategory},#{roomPrice},#{couponNumber},#{couponName},#{discount},
+		#{usePoint},#{totalPrice},#{paymentAmount},#{guestName},#{guestPhone},
+		#{accomNumber},#{accomName},#{roomNumber},0)
+	</insert>
+
+	<!-- 예약완료 시 쿠폰 사용 여부 변경 -->
+	<update id="usedCoupon"
+		parameterType="ssg.com.houssg.dto.UserCouponDto">
+		UPDATE user_coupon
+		SET is_used = 1
+		WHERE coupon_number =
+		#{couponNumber}
+	</update>
+
+
+	<!-- 예약완료 시 사용한 포인트 차감 -->
+	<update id="usedPoint"
+		parameterType="ssg.com.houssg.dto.UserDto">
+		UPDATE user
+		SET point = point - #{usePoint}
+		WHERE id =
+		#{Id}
+	</update>
+
+	<!-- 예약 상태 변경 (usedCheck) -->
+	<update id="usedCheck">
+		UPDATE reservation AS r
+		JOIN user AS u ON r.id =
+		u.id
+		SET r.status = 2
+		WHERE r.status = 1
+		AND r.end_date = CURDATE();
+	</update>
+
+	<!-- 이용완료 시 포인트 적립 -->
+	<update id="paymentRewards">
+		UPDATE user AS u
+		JOIN reservation AS r ON r.id = u.id
+		SET u.point = u.point + (r.payment_amount * 0.05)
+		WHERE r.status = 2
+		AND r.end_date = CURDATE();
+	</update>
+
+	<!-- 유저 - 예약내역 조회 -->
+	<select id="findRerservationById"
+		resultType="ssg.com.houssg.dto.ReservationHistoryDto">
+		SELECT r.reservation_number, r.reservation_time, r.status,
+		a.accom_number, a.accom_name, r.room_number, r.room_category,
+		r.start_date, r.end_date, r.room_price, r.coupon_name,
+		r.coupon_number,
+		r.discount, r.use_point, r.total_price,
+		r.payment_amount,
+		r.guest_name, r.guest_phone, r.review_status, a.img
+		FROM reservation r
+		LEFT JOIN accommodation a ON r.accom_number =
+		a.accom_number
+		WHERE r.id = #{Id}
+		ORDER BY r.reservation_time DESC;
+	</select>
+
+
+
+	<!-- 사업자 id로 소유한 숙소 번호, 명 찾기 -->
+	<select id="getAccommodationByOwnerId"
+		resultType="ssg.com.houssg.dto.AccomListDto">
+		SELECT accom_number, accom_name
+		FROM accommodation
+		WHERE id =
+		#{Id}
+	</select>
+
+	<!-- 사업자 - 숙소번호에 해당하는 예약내역 가져오기 -->
+	<select id="getHistoryForOwner"
+		resultType="ssg.com.houssg.dto.AccomReservationListDto">
+		SELECT reservation_number, room_category, room_number,
+		start_date, end_date,
+		guest_name, guest_phone
+		FROM reservation
+		WHERE
+		accom_number =
+		#{accomNumber}
+		AND (
+		(DATE_FORMAT(start_date, '%Y-%m')
+		&lt;=
+		#{yearMonth} AND DATE_FORMAT(end_date, '%Y-%m') >=
+		#{yearMonth})
+		OR
+		(DATE_FORMAT(start_date, '%Y-%m') &lt; #{yearMonth} AND
+		DATE_FORMAT(end_date, '%Y-%m') =
+		#{yearMonth})
+		)
+		AND status = 1
+	</select>
+
+
+	<!-- 숙소번호에 해당하는 객실 정보 가져오기 -->
+	<select id="getRoomInfoByAccommodationNumber"
+		resultType="ssg.com.houssg.dto.RoomDto">
+		SELECT room_number, room_category, room_availability
+		FROM
+		rooms
+		WHERE accom_number = #{accomNumber}
+	</select>
+
+	<!-- reservationNumber를 기반으로 예약 정보 조회 -->
+	<select id="getReservationDetails"
+		resultType="ssg.com.houssg.dto.ReservationDto">
+		SELECT r.id, r.use_point, r.coupon_number,
+		r.payment_amount, r.start_date
+		FROM reservation r
+		WHERE
+		r.reservation_number = #{reservationNumber}
+	</select>
+
+	<!-- 사업자 - 예약취소 -->
+	<update id="cancelReservationByOwner">
+		update reservation
+		set status = 4
+		where
+		reservation_number = #{reservationNumber}
+		AND status = 1
+	</update>
+
+	<!-- 유저 - 예약취소 -->
+	<update id="cancelReservationByUser">
+		update reservation
+		set status = 3
+		where
+		reservation_number = #{reservationNumber}
+		AND status = 1
+	</update>
+
+	<!-- 예약취소 - 쿠폰 반환 -->
+	<update id="returnUseCoupon">
+		UPDATE user_coupon
+		SET is_used = 0
+		WHERE coupon_number
+		= #{couponNumber}
+	</update>
+
+	<!-- 예약취소 - 포인트 반환 -->
+	<update id="returnUsePoint">
+		UPDATE user
+		SET point = point + #{usePoint}
+		WHERE id =
+		#{Id}
+	</update>
+
+	<!-- 사업자 예약취소 - 결제금액의 10% 포인트 리워드 지급 -->
+	<update id="pointRewardsForCancel">
+		UPDATE user AS u
+		JOIN reservation AS r ON r.id = u.id
+		SET u.point = u.point + (r.payment_amount * 0.1)
+		WHERE
+		r.reservation_number = #{reservationNumber}
+	</update>
+
+	<!-- 결제완료 후 예약완료 처리 -->
+	<update id="paymentCheck">
+		UPDATE reservation
+		set status = 1
+		where
+		reservation_number = #{reservationNumber}
+		AND status = 0
+	</update>
+
+	<!-- 예약등록(status 0) 후 20분 이내로 결제되지않은 내역 삭제 -->
+	<delete id="deleteUnpaidReservation">
+		DELETE FROM reservation
+		WHERE status = 0
+		AND
+		TIMESTAMPDIFF(SECOND, reservation_time, NOW()) >= 600;
+	</delete>
+
+	<!-- 오프라인 예약 추가(오너) -->
+	<insert id="offLineEnrollByOwner"
+		parameterType="ssg.com.houssg.dto.ReservationDto">
+		insert into reservation(reservation_number,
+		reservation_time,
+		id,
+		start_date,
+		end_date,
+		status,
+		nickname,
+		phone_number,
+		room_category,
+		room_price,
+		coupon_number,
+		coupon_name,
+		discount,
+		use_point,
+		total_price,
+		payment_amount,
+		guest_name,
+		guest_phone,
+		accom_number,
+		accom_name,
+		room_number,review_status)
+		values
+		(#{reservationNumber},
+		#{reservationTime}, #{id},
+		#{startDate},#{endDate}, 1,
+		#{nickname},#{phoneNumber},
+		#{roomCategory},#{roomPrice},#{couponNumber},#{couponName},#{discount},
+		#{usePoint},#{totalPrice},#{paymentAmount},#{guestName},#{guestPhone},
+		#{accomNumber},#{accomName},#{roomNumber},0)
+	</insert>
+
+	<!-- 오프라인 예약등록 전 예약가능 체크 -->
+	<select id="lastCheckForOffLine"
+		resultType="ssg.com.houssg.dto.ReservationRoomDto">
+		SELECT date_range.Date AS date,
+		rooms.room_number AS
+		roomNumber,
+		MAX(rooms.room_availability) - COALESCE(SUM(CASE WHEN
+		reservation.start_date &lt;= date_range.Date AND reservation.end_date
+		> date_range.Date THEN
+		1 ELSE 0 END), 0) AS availableRooms
+		FROM (
+		SELECT
+		DATE_ADD(#{startDate}, INTERVAL n DAY) AS Date
+		FROM for_count
+		WHERE
+		DATE_ADD(#{startDate}, INTERVAL n DAY) BETWEEN #{startDate} AND
+		DATE_SUB(#{endDate}, INTERVAL 1 DAY)
+		) AS date_range
+		CROSS JOIN rooms
+		LEFT JOIN reservation ON reservation.room_number = rooms.room_number
+		AND reservation.start_date &lt;= date_range.Date
+		AND
+		reservation.end_date > date_range.Date
+		AND reservation.status IN (0, 1)
+		WHERE rooms.room_number = #{roomNumber}
+		GROUP BY date_range.Date,
+		rooms.room_number
+		ORDER BY date_range.Date, rooms.room_number;
+	</select>
+
+	<select id="ownerModalCheck"
+		resultType="ssg.com.houssg.dto.ReservationRoomDto">
+		SELECT date_range.Date AS date,
+		CASE
+		WHEN rooms.room_number IS NOT NULL THEN MAX(rooms.room_availability) -
+		COALESCE(SUM(CASE WHEN
+		reservation.start_date &lt;= date_range.Date AND
+		reservation.end_date > date_range.Date THEN 1 ELSE 0 END), 0)
+		ELSE MAX(rooms.room_availability)
+		END AS availableRooms
+		FROM (
+		SELECT DATE_ADD(#{startDate}, INTERVAL n DAY) AS Date
+		FROM for_count
+		WHERE DATE_ADD(#{startDate}, INTERVAL n DAY) &lt;= DATE_ADD(#{startDate},
+		INTERVAL 20 DAY)
+		) AS date_range
+		LEFT JOIN rooms ON rooms.room_number = #{roomNumber}
+		LEFT JOIN reservation ON reservation.room_number = rooms.room_number AND
+		reservation.status IN (0, 1)
+		GROUP BY date_range.Date
+		ORDER BY date_range.Date;
+	</select>
+
+
+	<!-- 예약 삭제 -->
+	<delete id='deleteReservation'>
+		delete from reservation
+		where reservation_number =
+		#{reservationNumber}
+	</delete>
+
+	<!-- reservationNumber로 알람전송에 필요한 정보 조회 -->
+	<select id="getReservationInfoForGuest"
+		resultType="ssg.com.houssg.dto.ReservationForLmsDto">
+		SELECT
+		r.guest_phone, r.guest_name, r.start_date,
+		r.end_date,
+		r.accom_number, r.accom_name, r.room_category,
+		r.payment_amount,
+		a.check_in, a.check_out
+		FROM reservation r
+		JOIN
+		accommodation a ON r.accom_number = a.accom_number
+		WHERE
+		r.reservation_number = #{reservationNumber}
+	</select>
+
+	<!-- start_date 하루 전 예약 정보 조회 -->
+	<select id="getOndDayAgoReservation"
+		resultType="ssg.com.houssg.dto.ReservationForLmsDto">
+		SELECT r.guest_phone, r.guest_name, r.start_date,
+		r.end_date,
+		r.accom_number, r.accom_name, r.room_category,
+		r.payment_amount,
+		a.check_in, a.check_out, r.reservation_number
+		FROM
+		reservation r
+		JOIN
+		accommodation a ON r.accom_number = a.accom_number
+		WHERE status = 1
+		AND start_date = DATE_ADD(CURDATE(), INTERVAL 1 DAY);
+	</select>
+	
+	<update id="statusUpdate" parameterType="int">
+	    UPDATE reservation
+	    SET review_status = 1
+	    WHERE reservation_number = #{reservationNumber}
+	</update>
+
+</mapper>
