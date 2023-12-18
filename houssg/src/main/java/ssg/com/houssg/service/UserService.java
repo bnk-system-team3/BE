@@ -1,9 +1,12 @@
 package ssg.com.houssg.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 import ssg.com.houssg.dao.UserDao;
 
@@ -58,5 +61,10 @@ public class UserService {
 	public void updateLastLoginDate(UserDto user) {
 		dao.updateLastLoginDate(user);
     }	
+	
+	// 기술스택 조회
+	public List<LanguageCategoryDto> findLanguage() {
+        return dao.findLanguage();
+    }
 
 }

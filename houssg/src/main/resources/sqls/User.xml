@@ -59,6 +59,13 @@
 		FROM user
 		WHERE userId = #{userId}
 	</select>
+	
+	<select id="findLanguage" parameterType="ssg.com.houssg.dto.LanguageCategoryDto"
+		resultType="ssg.com.houssg.dto.LanguageCategoryDto">
+		select languageId, languageName
+		from
+		languagecategory
+	</select>
 
 
 </mapper>

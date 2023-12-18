@@ -1,44 +1,20 @@
 package ssg.com.houssg.controller;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.function.ServerRequest.Headers;
-
-import com.cloudinary.Url;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
+import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 
 import ssg.com.houssg.service.UserService;
@@ -165,5 +141,11 @@ public class UserController {
 			return ResponseEntity.badRequest().body("비밀번호 재설정에 실패했습니다.");
 		}
 	}
-
+	
+	// 기술스택 조회
+	@GetMapping("/Languagecategories")
+    public ResponseEntity<List<LanguageCategoryDto>> getLanguageCategories() {
+        List<LanguageCategoryDto> languageCategories = service.findLanguage();
+        return ResponseEntity.ok(languageCategories);
+    }
 }

@@ -3,7 +3,9 @@ package ssg.com.houssg.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
+import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 
 @Mapper
@@ -36,5 +38,8 @@ public interface UserDao {
 	
 	// 마지막 로그인 날짜 업데이트
 	void updateLastLoginDate(UserDto user);
+	
+	// 기술스택 조회
+	List<LanguageCategoryDto> findLanguage();
 
 }
