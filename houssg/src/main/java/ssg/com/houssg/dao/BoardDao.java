@@ -11,5 +11,7 @@ public interface BoardDao {
 
 	void saveBoard(BoardDto board);
 	
-		
+	void updateBoard(BoardDto board);
+	
+	String findUser(BoardDto board);
 }

@@ -10,11 +10,19 @@ import ssg.com.houssg.dto.BoardDto;
 @Service
 @Transactional
 public class BoardService {
-	
+
 	@Autowired
 	BoardDao dao;
-	
+
 	public void saveBoard(BoardDto board) {
 		dao.saveBoard(board);
+	}
+
+	public void updateBoard(BoardDto board) {
+		dao.updateBoard(board);
+	}
+
+	public String findUser(BoardDto board) {
+		return dao.findUser(board);
 	}
 }

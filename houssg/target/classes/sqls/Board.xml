@@ -8,13 +8,42 @@
 
 	<!-- 게시글 저장 -->
 	<insert id="saveBoard" parameterType="ssg.com.houssg.dto.BoardDto">
-        INSERT INTO board
-        (title, description, participantCnt, recruitCnt, onOffStatus, activeFlag,
-        chattingUrl, startDate, endDate, createDate, userId, dueDate, locationInfo, viewCnt)
-        VALUES
-        (#{title}, #{description}, #{participantCnt}, #{recruitCnt}, #{onOffStatus}, 1,
-        #{chattingUrl}, #{startDate}, #{endDate}, #{createDate}, #{userId}, #{dueDate},
-        #{locationInfo}, 0)
-    </insert>
+		INSERT INTO board
+		(title, description, participantCnt, recruitCnt, onOffStatus, activeFlag,
+		chattingUrl, startDate, endDate, createDate, userId, dueDate,
+		locationInfo, viewCnt)
+		VALUES
+		(#{title}, #{description}, #{participantCnt}, #{recruitCnt}, #{onOffStatus}, 1,
+		#{chattingUrl}, #{startDate}, #{endDate}, #{createDate}, #{userId},
+		#{dueDate},
+		#{locationInfo}, 0)
+	</insert>
+
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="ssg.com.houssg.dto.BoardDto">
+		UPDATE board
+		SET
+		title = #{title},
+		description = #{description},
+		participantCnt = #{participantCnt},
+		recruitCnt = #{recruitCnt},
+		onOffStatus = #{onOffStatus},
+		activeFlag = #{activeFlag},
+		chattingUrl = #{chattingUrl},
+		startDate = #{startDate},
+		endDate = #{endDate},
+		dueDate = #{dueDate},
+		locationInfo = #{locationInfo}
+		WHERE
+		boardId = #{boardId}
+	</update>
+	
+	<!-- 게시글 작성자 조회 -->
+	<select id="findUser" parameterType="ssg.com.houssg.dto.BoardDto"
+		resultType="String">
+		select userId
+		from board
+		where boardId = #{boardId}
+	</select>
 
 </mapper>
