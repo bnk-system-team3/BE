@@ -1,6 +1,6 @@
 package ssg.com.houssg.dto;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class UserDto {
 

@@ -33,5 +33,8 @@ public interface UserDao {
 	
 	// 마이페이지 비밀번호 찾기
 	String findPasswordById(String userId);
+	
+	// 마지막 로그인 날짜 업데이트
+	void updateLastLoginDate(UserDto user);
 
 }

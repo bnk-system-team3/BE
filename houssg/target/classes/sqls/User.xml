@@ -37,6 +37,13 @@
 		user
 		where userId=#{userId} and password=#{password}
 	</select>
+	
+	<!-- 마지막 로그인 날짜 업데이트 -->
+	<update id="updateLastLoginDate" parameterType="ssg.com.houssg.dto.UserDto">
+		UPDATE user
+		SET lastLoginDate = #{lastLoginDate} 
+		WHERE userId = #{userId}
+	</update>
 
 	<!-- 비밀번호 업데이트 -->
 	<update id="updatePassword" parameterType="ssg.com.houssg.dto.UserDto">

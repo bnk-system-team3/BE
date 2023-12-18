@@ -35,7 +35,6 @@ import com.cloudinary.Url;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -49,13 +48,11 @@ import ssg.com.houssg.util.UserUtil;
 @RequestMapping("user")
 public class UserController {
 
-
 	@Autowired
 	private UserService service;
 
 	@Autowired
 	private UserUtil userUtil;
-
 
 	// 로그인
 	@PostMapping("/log-in")
@@ -66,30 +63,32 @@ public class UserController {
 		user.setPassword(userUtil.hashPassword(user.getPassword())); // 사용자가 입력한 비밀번호를 DB에 있는 hashedPW로 변경한 후에 로그인 진행
 		UserDto dto = service.login(user);
 		if (dto != null) {
-            // 로그인이 성공한 경우 세션에 사용자 정보 저장
-            session.setAttribute("userId", dto.getUserId());
-            session.setAttribute("email", dto.getEmail());
-            session.setAttribute("nickname", dto.getNickname());
-            session.setAttribute("point", dto.getPoint());
-            session.setAttribute("department", dto.getDepartment());
-            
-            System.out.println("로그인 성공" + new Date());
+			// 로그인이 성공한 경우 세션에 사용자 정보 저장
+			session.setAttribute("userId", dto.getUserId());
+			session.setAttribute("email", dto.getEmail());
+			session.setAttribute("nickname", dto.getNickname());
+			session.setAttribute("point", dto.getPoint());
+			session.setAttribute("department", dto.getDepartment());
 
-            return ResponseEntity.ok().build(); // 로그인 성공 응답
-        } else {
-            return ResponseEntity.badRequest().build(); // 로그인 실패 응답
-        }
-    }
-	
+			user.setLastLoginDate(new Date());
+			service.updateLastLoginDate(user);
+
+			System.out.println("로그인 성공" + new Date());
+
+			return ResponseEntity.ok().build(); // 로그인 성공 응답
+		} else {
+			return ResponseEntity.badRequest().build(); // 로그인 실패 응답
+		}
+	}
+
 	// 로그아웃
 	@PostMapping("/log-out")
 	public ResponseEntity<?> logout(HttpSession session) {
-	    // 세션을 무효화하여 로그아웃 처리
-	    session.invalidate();
-	    System.out.println("로그아웃 성공" + new Date());
-	    return ResponseEntity.ok().build();
+		// 세션을 무효화하여 로그아웃 처리
+		session.invalidate();
+		System.out.println("로그아웃 성공" + new Date());
+		return ResponseEntity.ok().build();
 	}
-
 
 	// 닉네임 중복확인
 	@PostMapping("nickname-check")
@@ -126,7 +125,6 @@ public class UserController {
 		return "NO";
 	}
 
-	
 	// 비밀번호 변경
 	@PostMapping("update-pw")
 	public ResponseEntity<String> updatePassword(@RequestParam("userId") String userId,
@@ -168,5 +166,4 @@ public class UserController {
 		}
 	}
 
-	
 }

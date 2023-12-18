@@ -53,5 +53,10 @@ public class UserService {
 	public String findPasswordById(String userId) {
 		return dao.findPasswordById(userId);
 	}
+	
+	// 마지막 로그인 날짜 업데이트
+	public void updateLastLoginDate(UserDto user) {
+		dao.updateLastLoginDate(user);
+    }	
 
 }
