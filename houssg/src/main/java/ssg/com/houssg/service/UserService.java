@@ -14,11 +14,6 @@ public class UserService {
 	@Autowired
 	UserDao dao;
 
-	// 아이디 중복체크
-	public int idCheck(String id) {
-		return dao.idCheck(id);
-	}
-
 	// 회원가입
 	public int signUp(UserDto dto) {
 		return dao.signUp(dto);
@@ -29,33 +24,24 @@ public class UserService {
 		return dao.nicknameCheck(nickname);
 	}
 
-	// ID + 폰번호 중복체크
-	public int idPhoneNumberCheck(String id, String phone_number) {
-		return dao.idPhoneNumberCheck(id, phone_number);
-	}
-
 	// 로그인
 	public UserDto login(UserDto dto) {
 		return dao.login(dto);
 	}
 
-	public UserDto findUserById(String id) {
-		return dao.findUserById(id);
+	// 유저 식별
+	public UserDto findUserById(String userId) {
+		return dao.findUserById(userId);
 	}
 
-	// 아이디 찾기
-	public UserDto findIdByPhoneNumber(String phone_number) {
-		return dao.findIdByPhoneNumber(phone_number);
-	}
-
-	// 휴대폰번호 중복체크
-	public int phoneNumberCheck(String phone_number) {
-		return dao.phoneNumberCheck(phone_number);
+	// 닉네임 변경
+	public void changeNickname(String userId, String nickname) {
+		dao.changeNickname(userId, nickname);
 	}
 
 	// 비밀번호 찾기
-	public UserDto findUserByIdPhonNumber(String id, String phone_number) {
-		return dao.findUserByIdPhonNumber(id, phone_number);
+	public UserDto findUserByIdPhonNumber(String userId, String phone_number) {
+		return dao.findUserByIdPhonNumber(userId, phone_number);
 	}
 
 	// 비밀번호 업데이트
@@ -63,27 +49,9 @@ public class UserService {
 		return dao.updatePassword(user);
 	}
 
-	public UserDto findByUsername(String username) {
-		return null;
-	}
-	
 	// 마이페이지 비밀번호 찾기
-    public String findPasswordById(String id) {
-        return dao.findPasswordById(id);
-    }
-    
-    // 전화번호 변경
- 	public void changePhone(String id, String phone_number) {
- 		 dao.changePhone(id, phone_number);
- 	}
- 	
- 	// 닉네임 변경
- 	public void changeNickname(String id, String nick_name) {
- 		dao.changeNickname(id, nick_name);
- 	}
+	public String findPasswordById(String userId) {
+		return dao.findPasswordById(userId);
+	}
 
- 	// 카카오 로그인
- 	public UserDto kakaoLogin(String id) {
- 		return dao.kakaoLogin(id);
- 	}
 }

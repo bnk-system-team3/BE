@@ -12,12 +12,12 @@ public class UserUtil {
 
     public boolean isValidUser(UserDto user) {
         // 필수 입력 여부 확인
-        if (isNullOrEmpty(user.getId()) || isNullOrEmpty(user.getPassword()) || isNullOrEmpty(user.getNickname()) || isNullOrEmpty(user.getPhonenumber()) ) {
+        if (isNullOrEmpty(user.getUserId()) || isNullOrEmpty(user.getPassword()) || isNullOrEmpty(user.getNickname()) || isNullOrEmpty(user.getEmail()) ) {
             System.out.println("회원가입 실패: 필수 입력 항목이 비어 있습니다.");
             return false;
         }
 
-        if (!isValidUserId(user.getId())) {
+        if (!isValidUserId(user.getUserId())) {
             System.out.println("회원가입 실패: 아이디가 유효하지 않습니다.");
             return false;
         }
@@ -32,9 +32,9 @@ public class UserUtil {
             return false;
         }
 
-        // 전화번호 유효성 검사 (선택사항)
-        if (!isValidPhoneNumber(user.getPhonenumber())) {
-            System.out.println("회원가입 실패: 전화번호가 유효하지 않습니다.");
+        // 이메일 유효성 검사 (선택사항)
+        if (!isValidEmail(user.getEmail())) {
+            System.out.println("회원가입 실패: 이메일 형식이 유효하지 않습니다.");
             return false;
         }
 
@@ -63,9 +63,9 @@ public class UserUtil {
         return nickname.length() >= 2 && nickname.length() <= 8 && Pattern.matches("^[가-힣a-zA-Z0-9]+$", nickname);
     }
 
-    public boolean isValidPhoneNumber(String phoneNumber) {
-        // 전화번호 유효성 검사 (숫자만 허용)
-        return Pattern.matches("^[0-9]+$", phoneNumber);
+    public boolean isValidEmail(String email) {
+        // 이메일 유효성 검사
+        return Pattern.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", email);
     }
     
     // 현재 비밀번호 검증

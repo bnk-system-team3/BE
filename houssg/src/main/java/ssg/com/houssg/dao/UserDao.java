@@ -10,38 +10,28 @@ import ssg.com.houssg.dto.UserDto;
 @Repository
 public interface UserDao {
 	
-	int idCheck(String id);
-	int nicknameCheck(String nick_name);
+	// 닉네임 중복확인
+	int nicknameCheck(String nickname);
+	
+	// 회원가입
 	int signUp(UserDto dto);
-	int idPhoneNumberCheck(String id, String phone_number);
+	
+	// 로그인
 	UserDto login(UserDto dto);
 	
 	// 유저 조회
-	UserDto findUserById(String id);
-	 
-	// 아이디 찾기
-	UserDto findIdByPhoneNumber(String phone_number);
+	UserDto findUserById(String userId);
 	
-	// 휴대폰번호 중복
-	int phoneNumberCheck(String phone_number);
-	
+	// 마이페이지 닉네임 변경
+	void changeNickname(String userId, String nickname);
+
 	// 패스워드 업데이트
 	int updatePassword(UserDto user);
 	
 	// 비밀번호 찾기
-	UserDto findUserByIdPhonNumber(String id, String phone_number);
+	UserDto findUserByIdPhonNumber(String userId, String phone_number);
 	
 	// 마이페이지 비밀번호 찾기
-	String findPasswordById(String id);
-	
-	// 마이페이지 전화번호 변경
-	void changePhone(String id, String phone_number);
-	
-	// 마이페이지 닉네임 변경
-	void changeNickname(String id, String nick_name);
-	
-	// 카카오 로그인
-	UserDto kakaoLogin(String id);
-	
-	
+	String findPasswordById(String userId);
+
 }
