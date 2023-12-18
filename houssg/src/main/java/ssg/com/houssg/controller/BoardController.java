@@ -4,9 +4,11 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
@@ -43,5 +45,17 @@ public class BoardController {
 	            return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
 	        }
 	    }
+	 
+	 
+	  @PatchMapping("/update")
+	    public ResponseEntity<?> updateBoard(@RequestParam int boardId, @RequestBody BoardDto boardDto) {
+	        // 게시글 수정
+		    boardDto.setBoardId(boardId);
+	        service.updateBoard(boardDto);
+	        
+	        System.out.println("게시글 수정 완료");
+	        return ResponseEntity.ok().build(); // 게시글 수정 성공 응답
+	    }
+	}
 
-}
+
