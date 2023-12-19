@@ -17,8 +17,19 @@ public class BoardDto {
 	private Date createDate;
 	private String userId;
 	private String dueDate;
-	private String locationInfo;
+	private String location;
 	private int viewCnt;
+	private String category;
+
+	
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
 	public int getBoardId() {
 		return boardId;
@@ -124,12 +135,12 @@ public class BoardDto {
 		this.dueDate = dueDate;
 	}
 
-	public String getLocationInfo() {
-		return locationInfo;
+	public String getLocation() {
+		return location;
 	}
 
-	public void setLocationInfo(String locationInfo) {
-		this.locationInfo = locationInfo;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public int getViewCnt() {
@@ -146,7 +157,9 @@ public class BoardDto {
 				+ ", participantCnt=" + participantCnt + ", recruitCnt=" + recruitCnt + ", onOffStatus=" + onOffStatus
 				+ ", activeFlag=" + activeFlag + ", chattingUrl=" + chattingUrl + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", createDate=" + createDate + ", userId=" + userId + ", dueDate=" + dueDate
-				+ ", locationInfo=" + locationInfo + ", viewCnt=" + viewCnt + "]";
+				+ ", location=" + location + ", viewCnt=" + viewCnt + ", category=" + category + "]";
 	}
+
+	
 
 }
