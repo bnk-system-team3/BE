@@ -81,5 +81,13 @@
 		VALUES
 		(#{reviewContent},#{boardId},#{userId},#{createDate})
 	</insert>
+	
+	<!-- 모임 참가 신청 -->
+	<insert id="applyForParticipation" parameterType="ssg.com.houssg.dto.ParticipantBoardDto">
+		INSERT INTO participantboard
+		(captainFlag, boardId, userId, joinFlag)
+		VALUES
+		(0,#{boardId},#{userId},2)
+	</insert>
 
 </mapper>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
 import ssg.com.houssg.dto.BoardDto;
+import ssg.com.houssg.dto.ParticipantBoardDto;
 import ssg.com.houssg.dto.ReviewDto;
 import ssg.com.houssg.service.BoardService;
 
@@ -89,5 +90,29 @@ public class BoardController {
 	        return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
 	    }
 	}
+	
+	// 지원자 참가신청
+	@PostMapping("/apply")
+    public ResponseEntity<?> applyForParticipation(@RequestParam int boardId, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+
+        if (userId != null) {
+            // 모임 참가 신청 정보 생성
+            ParticipantBoardDto participantDto = new ParticipantBoardDto();
+            participantDto.setBoardId(boardId);
+            participantDto.setUserId(userId);
+            participantDto.setCaptainFlag(0); // 기본값으로 설정
+            participantDto.setJoinFlag(2); // 모임 참가 상태를 나타내는 값
+
+            // 모임 참가 신청
+            service.applyForParticipation(participantDto);
+
+            System.out.println("모임 참가 신청 성공");
+
+            return ResponseEntity.ok().build(); // 성공 응답
+        } else {
+            return ResponseEntity.badRequest().build(); // 실패 응답
+        }
+    }
 }
 

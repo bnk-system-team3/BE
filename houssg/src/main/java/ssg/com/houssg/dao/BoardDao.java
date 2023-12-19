@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import ssg.com.houssg.dto.BoardDto;
+import ssg.com.houssg.dto.ParticipantBoardDto;
 import ssg.com.houssg.dto.ReviewDto;
 
 @Mapper
@@ -26,4 +27,7 @@ public interface BoardDao {
 	
 	// 리뷰 작성
 	void saveReview(ReviewDto review);
+	
+	// 모임 참가 신청
+	void applyForParticipation(ParticipantBoardDto participantDto);
 }
