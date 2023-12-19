@@ -13,11 +13,12 @@ CREATE TABLE `USER` (
 -- 게시판 테이블
 CREATE TABLE `BOARD` (
   `boardId` int NOT NULL AUTO_INCREMENT,
+  `category` varchar(45) NOT NULL,
   `title` varchar(50) NOT NULL,
   `description` longtext,
   `participantCnt` int NOT NULL DEFAULT 1 COMMENT '참여 인원 - Participant_Board 테이블에서 1(참가) 상태의 수',
   `recruitCnt` int NOT NULL COMMENT '모집할 인원',
-  `onOffFlag` int NOT NULL DEFAULT 4 COMMENT '1 - Online / 2 - Offline / 3 - Both / 4 - TBD',
+  `onOffStatus` int NOT NULL DEFAULT 4 COMMENT '1 - Online / 2 - Offline / 3 - Both / 4 - TBD',
   `activeFlag` int NOT NULL DEFAULT 1 COMMENT '1 - 모집중 / 2 - 모집완료 / 3 - 진행중 / 4 - 종료',
   `chattingURL` varchar(60) NOT NULL COMMENT '참여를 위한 오픈 채팅 경로',
   `startDate` datetime NOT NULL,
@@ -94,6 +95,7 @@ CREATE TABLE `COMMENT` (
   `userId` char(7) NOT NULL,
   `cmtId` int NOT NULL AUTO_INCREMENT,
   `cmt` longtext NOT NULL,
+  `createDate` datetime NOT NULL,
   PRIMARY KEY (`cmtId`),
   KEY `FK_board_TO_comment_1` (`boardId`),
   KEY `FK_user_TO_comment_1` (`userId`),
@@ -137,4 +139,14 @@ CREATE TABLE `ACTIVEGROUP` (
   KEY `FK_user_TO_activeGroup_1` (`userId`),
   CONSTRAINT `FK_board_TO_activeGroup_1` FOREIGN KEY (`boardId`) REFERENCES `board` (`boardId`),
   CONSTRAINT `FK_user_TO_activeGroup_1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
+);
+
+-- 후기 테이블
+CREATE TABLE `REVIEW` (
+  `reviewId` int NOT NULL AUTO_INCREMENT,
+  `reviewContent` longtext NOT NULL,
+  `boardId` int NOT NULL,
+  `userId` char(7) NOT NULL,
+  `createDate` datetime NOT NULL,
+  PRIMARY KEY (`reviewId`)
 );
