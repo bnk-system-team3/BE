@@ -17,7 +17,6 @@ public class BoardService {
 
 	@Autowired
 	BoardDao dao;
-	
 
 	public void saveBoard(BoardDto board) {
 		dao.saveBoard(board);
@@ -30,26 +29,33 @@ public class BoardService {
 	public String findUser(BoardDto board) {
 		return dao.findUser(board);
 	}
-	
-	public List<BoardDto> getHomeBoardList() {
-        return dao.getHomeBoardList();
-    }
-	
-	public void saveReview(ReviewDto review) {
-	    dao.saveReview(review);
-	}
-	
-	public void applyForParticipation(ParticipantBoardDto participantDto) {
-        dao.applyForParticipation(participantDto);
-    }
-	
-	public void updateParticipantStatus(int boardId, int joinFlag, String userId) {
-        ParticipantBoardDto participantBoardDto = new ParticipantBoardDto();
-        participantBoardDto.setBoardId(boardId);
-        participantBoardDto.setJoinFlag(joinFlag);
-        participantBoardDto.setUserId(userId);
 
-        dao.updateParticipantStatus(participantBoardDto);
-    }
-	
+	public List<BoardDto> getHomeBoardList() {
+		return dao.getHomeBoardList();
+	}
+
+	public void saveReview(ReviewDto review) {
+		dao.saveReview(review);
+	}
+
+	public void applyForParticipation(ParticipantBoardDto participantDto) {
+		dao.applyForParticipation(participantDto);
+	}
+
+	public void updateParticipantStatus(int boardId, int joinFlag, String userId) {
+		ParticipantBoardDto participantBoardDto = new ParticipantBoardDto();
+		participantBoardDto.setBoardId(boardId);
+		participantBoardDto.setJoinFlag(joinFlag);
+		participantBoardDto.setUserId(userId);
+
+		dao.updateParticipantStatus(participantBoardDto);
+	}
+
+	public List<BoardDto> getMyProjects(String userId) {
+		return dao.getMyProjects(userId);
+	}
+
+	public List<ParticipantBoardDto> getApplicantsForProject(int boardId) {
+		return dao.getApplicantsForProject(boardId);
+	}
 }

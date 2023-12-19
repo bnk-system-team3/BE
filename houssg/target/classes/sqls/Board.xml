@@ -62,7 +62,8 @@
 		select boardId
 		from board
 		where title like "%#{keyword}%"
-		or description like "%#{keyword}%"
+		or
+		description like "%#{keyword}%"
 	</select>
 
 
@@ -72,8 +73,8 @@
 		category, dueDate, title, userId, viewCnt
 		from board
 	</select>
-	
-	
+
+
 	<!-- 후기 작성 -->
 	<insert id="saveReview" parameterType="ssg.com.houssg.dto.ReviewDto">
 		INSERT INTO review
@@ -81,22 +82,43 @@
 		VALUES
 		(#{reviewContent},#{boardId},#{userId},#{createDate})
 	</insert>
-	
+
 	<!-- 모임 참가 신청 -->
 	<insert id="applyForParticipation" parameterType="ssg.com.houssg.dto.ParticipantBoardDto">
-		INSERT INTO participantboard
+		INSERT INTO
+		participantboard
 		(captainFlag, boardId, userId, joinFlag)
 		VALUES
 		(0,#{boardId},#{userId},2)
 	</insert>
-	
+
 	<!-- 지원자 가입신청 승인/거절 -->
 	<update id="updateParticipantStatus" parameterType="ssg.com.houssg.dto.ParticipantBoardDto">
-		UPDATE participantboard
+		UPDATE
+		participantboard
 		SET
 		joinFlag = #{joinFlag}
 		WHERE
-		userId = #{userId} AND boardId = #{boardId}
+		userId = #{userId} AND
+		boardId = #{boardId}
 	</update>
+
+	<!-- 내가 생성한 프로젝트 목록 조회 -->
+	<select id="getMyProjects" parameterType="String"
+		resultType="ssg.com.houssg.dto.BoardDto">
+		SELECT boardId, title
+		FROM board
+		WHERE userId = #{userId}
+	</select>
+
+	<!-- 해당 프로젝트에 지원한 참가자 이름 및 가입신청 상태 조회 -->
+	<select id="getApplicantsForProject" parameterType="int"
+		resultType="ssg.com.houssg.dto.ParticipantBoardDto">
+		SELECT pb.boardId, pb.userId, pb.joinFlag
+		FROM participantboard pb
+		JOIN user u ON pb.userId = u.userId
+		WHERE pb.boardId = #{boardId}
+	</select>
+
 
 </mapper>

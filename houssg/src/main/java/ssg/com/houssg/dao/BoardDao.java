@@ -33,4 +33,12 @@ public interface BoardDao {
 
 	// 참가자 상태 업데이트
     void updateParticipantStatus(ParticipantBoardDto participantBoardDto);
+
+    // 작성자가 생성한 프로젝트 목록 조회
+    List<BoardDto> getMyProjects(String userId);
+
+    // 해당 프로젝트에 지원한 참가자 이름 및 가입신청 상태 조회
+    List<ParticipantBoardDto> getApplicantsForProject(int boardId);
+
+
 }

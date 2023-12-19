@@ -57,74 +57,89 @@ public class BoardController {
 		System.out.println("게시글 수정 완료");
 		return ResponseEntity.ok().build(); // 게시글 수정 성공 응답
 	}
-	
+
 	@GetMapping("/home")
-    public ResponseEntity<List<BoardDto>> getHomeBoardList() {
-        List<BoardDto> boardList = service.getHomeBoardList();
-        return ResponseEntity.ok(boardList);
-    }
-	
+	public ResponseEntity<List<BoardDto>> getHomeBoardList() {
+		List<BoardDto> boardList = service.getHomeBoardList();
+		return ResponseEntity.ok(boardList);
+	}
+
 	// (기존 코드 생략)
 
 	@PostMapping("/saveReview")
-	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto, HttpSession session) {
+	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto,
+			HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+
+		if (userId != null) {
+			// 현재 날짜로 createDate 설정
+			reviewDto.setCreateDate(new Date());
+
+			// 세션에서 가져온 userId로 설정
+			reviewDto.setUserId(userId);
+
+			// boardId 설정
+			reviewDto.setBoardId(boardId);
+
+			// 리뷰 저장
+			service.saveReview(reviewDto);
+
+			System.out.println("리뷰 저장 성공");
+
+			return ResponseEntity.ok().build(); // 리뷰 저장 성공 응답
+		} else {
+			return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
+		}
+	}
+
+	// 지원자 참가신청
+	@PostMapping("/apply")
+	public ResponseEntity<?> applyForParticipation(@RequestParam int boardId, HttpSession session) {
+		String userId = (String) session.getAttribute("userId");
+
+		if (userId != null) {
+			// 모임 참가 신청 정보 생성
+			ParticipantBoardDto participantDto = new ParticipantBoardDto();
+			participantDto.setBoardId(boardId);
+			participantDto.setUserId(userId);
+			participantDto.setCaptainFlag(0); // 기본값으로 설정
+			participantDto.setJoinFlag(2); // 모임 참가 상태를 나타내는 값
+
+			// 모임 참가 신청
+			service.applyForParticipation(participantDto);
+
+			System.out.println("모임 참가 신청 성공");
+
+			return ResponseEntity.ok().build(); // 성공 응답
+		} else {
+			return ResponseEntity.badRequest().build(); // 실패 응답
+		}
+	}
+
+	@PatchMapping("/updateApplyStatus")
+	public ResponseEntity<?> updateParticipantStatus(@RequestParam int boardId, @RequestParam int joinFlag,
+			@RequestParam String userId) {
+
+		service.updateParticipantStatus(boardId, joinFlag, userId);
+		System.out.println("지원상태 업데이트");
+		return ResponseEntity.ok().build(); // 업데이트 성공 응답
+	}
+
+	@GetMapping("/my-boards")
+	public ResponseEntity<List<BoardDto>> getMyProjects(HttpSession session) {
 	    String userId = (String) session.getAttribute("userId");
-
 	    if (userId != null) {
-	        // 현재 날짜로 createDate 설정
-	        reviewDto.setCreateDate(new Date());
-
-	        // 세션에서 가져온 userId로 설정
-	        reviewDto.setUserId(userId);
-
-	        // boardId 설정
-	        reviewDto.setBoardId(boardId);
-
-	        // 리뷰 저장
-	        service.saveReview(reviewDto);
-
-	        System.out.println("리뷰 저장 성공");
-
-	        return ResponseEntity.ok().build(); // 리뷰 저장 성공 응답
+	        List<BoardDto> myProjects = service.getMyProjects(userId);
+	        return ResponseEntity.ok(myProjects);
 	    } else {
 	        return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
 	    }
 	}
-	
-	// 지원자 참가신청
-	@PostMapping("/apply")
-    public ResponseEntity<?> applyForParticipation(@RequestParam int boardId, HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
 
-        if (userId != null) {
-            // 모임 참가 신청 정보 생성
-            ParticipantBoardDto participantDto = new ParticipantBoardDto();
-            participantDto.setBoardId(boardId);
-            participantDto.setUserId(userId);
-            participantDto.setCaptainFlag(0); // 기본값으로 설정
-            participantDto.setJoinFlag(2); // 모임 참가 상태를 나타내는 값
 
-            // 모임 참가 신청
-            service.applyForParticipation(participantDto);
-
-            System.out.println("모임 참가 신청 성공");
-
-            return ResponseEntity.ok().build(); // 성공 응답
-        } else {
-            return ResponseEntity.badRequest().build(); // 실패 응답
-        }
-    }
-	
-	
-	@PatchMapping("/updateApplyStatus")
-    public ResponseEntity<?> updateParticipantStatus(
-            @RequestParam int boardId,
-            @RequestParam int joinFlag,
-            @RequestParam String userId) {
-
-		service.updateParticipantStatus(boardId, joinFlag, userId);
-        System.out.println("지원상태 업데이트");
-		return ResponseEntity.ok().build(); // 업데이트 성공 응답
-    }
+	@GetMapping("/applicants")
+	public ResponseEntity<List<ParticipantBoardDto>> getApplicantsForProject(@RequestParam int boardId) {
+		List<ParticipantBoardDto> applicants = service.getApplicantsForProject(boardId);
+		return ResponseEntity.ok(applicants);
+	}
 }
-
