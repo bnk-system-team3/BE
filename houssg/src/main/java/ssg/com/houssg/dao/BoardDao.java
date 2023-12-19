@@ -30,4 +30,7 @@ public interface BoardDao {
 	
 	// 모임 참가 신청
 	void applyForParticipation(ParticipantBoardDto participantDto);
+
+	// 참가자 상태 업데이트
+    void updateParticipantStatus(ParticipantBoardDto participantBoardDto);
 }

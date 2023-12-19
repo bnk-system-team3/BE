@@ -89,5 +89,14 @@
 		VALUES
 		(0,#{boardId},#{userId},2)
 	</insert>
+	
+	<!-- 지원자 가입신청 승인/거절 -->
+	<update id="updateParticipantStatus" parameterType="ssg.com.houssg.dto.ParticipantBoardDto">
+		UPDATE participantboard
+		SET
+		joinFlag = #{joinFlag}
+		WHERE
+		userId = #{userId} AND boardId = #{boardId}
+	</update>
 
 </mapper>

@@ -114,5 +114,17 @@ public class BoardController {
             return ResponseEntity.badRequest().build(); // 실패 응답
         }
     }
+	
+	
+	@PatchMapping("/updateApplyStatus")
+    public ResponseEntity<?> updateParticipantStatus(
+            @RequestParam int boardId,
+            @RequestParam int joinFlag,
+            @RequestParam String userId) {
+
+		service.updateParticipantStatus(boardId, joinFlag, userId);
+        System.out.println("지원상태 업데이트");
+		return ResponseEntity.ok().build(); // 업데이트 성공 응답
+    }
 }
 

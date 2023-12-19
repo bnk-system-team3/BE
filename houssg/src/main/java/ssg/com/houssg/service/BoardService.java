@@ -42,4 +42,14 @@ public class BoardService {
 	public void applyForParticipation(ParticipantBoardDto participantDto) {
         dao.applyForParticipation(participantDto);
     }
+	
+	public void updateParticipantStatus(int boardId, int joinFlag, String userId) {
+        ParticipantBoardDto participantBoardDto = new ParticipantBoardDto();
+        participantBoardDto.setBoardId(boardId);
+        participantBoardDto.setJoinFlag(joinFlag);
+        participantBoardDto.setUserId(userId);
+
+        dao.updateParticipantStatus(participantBoardDto);
+    }
+	
 }
