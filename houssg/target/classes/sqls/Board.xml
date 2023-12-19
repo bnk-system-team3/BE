@@ -9,12 +9,15 @@
 	<!-- 게시글 저장 -->
 	<insert id="saveBoard" parameterType="ssg.com.houssg.dto.BoardDto">
 		INSERT INTO board
-		(title, description, participantCnt, recruitCnt, onOffStatus, activeFlag,
+		(title,
+		description, participantCnt, recruitCnt, onOffStatus, activeFlag,
 		chattingUrl, startDate, endDate, createDate, userId, dueDate,
 		location, viewCnt, category)
 		VALUES
-		(#{title}, #{description}, #{participantCnt}, #{recruitCnt}, #{onOffStatus}, 1,
-		#{chattingUrl}, #{startDate}, #{endDate}, #{createDate}, #{userId},
+		(#{title}, #{description},
+		#{participantCnt}, #{recruitCnt}, #{onOffStatus}, 1,
+		#{chattingUrl},
+		#{startDate}, #{endDate}, #{createDate}, #{userId},
 		#{dueDate},
 		#{location}, 0, #{category})
 	</insert>
@@ -23,22 +26,28 @@
 	<update id="updateBoard" parameterType="ssg.com.houssg.dto.BoardDto">
 		UPDATE board
 		SET
-		title = #{title},
+		title =
+		#{title},
 		description = #{description},
-		participantCnt = #{participantCnt},
+		participantCnt =
+		#{participantCnt},
 		recruitCnt = #{recruitCnt},
-		onOffStatus = #{onOffStatus},
+		onOffStatus =
+		#{onOffStatus},
 		activeFlag = #{activeFlag},
-		chattingUrl = #{chattingUrl},
+		chattingUrl =
+		#{chattingUrl},
 		startDate = #{startDate},
 		endDate = #{endDate},
-		dueDate = #{dueDate},
+		dueDate =
+		#{dueDate},
 		location = #{location}
 		category = #{category}
 		WHERE
-		boardId = #{boardId}
+		boardId =
+		#{boardId}
 	</update>
-	
+
 	<!-- 게시글 작성자 조회 -->
 	<select id="findUser" parameterType="ssg.com.houssg.dto.BoardDto"
 		resultType="String">
@@ -46,21 +55,31 @@
 		from board
 		where boardId = #{boardId}
 	</select>
-	
+
 	<!-- 키워드 검색 조회 -->
-   <select id="searchKeyword" parameterType="ssg.com.houssg.dto.BoardDto"
-      resultType="String">
-      select boardId
-      from board
-      where title like "%#{keyword}%"
-      or description like "%#{keyword}%"
-   </select>
-   
-   	
+	<select id="searchKeyword" parameterType="ssg.com.houssg.dto.BoardDto"
+		resultType="String">
+		select boardId
+		from board
+		where title like "%#{keyword}%"
+		or description like "%#{keyword}%"
+	</select>
+
+
 	<!-- 홈 화면 모임 정보 조회 -->
 	<select id="getHomeBoardList" resultType="ssg.com.houssg.dto.BoardDto">
-		select boardId, category, dueDate, title, userId, viewCnt
+		select boardId,
+		category, dueDate, title, userId, viewCnt
 		from board
 	</select>
+	
+	
+	<!-- 후기 작성 -->
+	<insert id="saveReview" parameterType="ssg.com.houssg.dto.ReviewDto">
+		INSERT INTO review
+		(reviewContent, boardId, userId, createDate)
+		VALUES
+		(#{reviewContent},#{boardId},#{userId},#{createDate})
+	</insert>
 
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ssg.com.houssg.dao.BoardDao;
 import ssg.com.houssg.dto.BoardDto;
+import ssg.com.houssg.dto.ReviewDto;
 
 @Service
 @Transactional
@@ -31,4 +32,8 @@ public class BoardService {
 	public List<BoardDto> getHomeBoardList() {
         return dao.getHomeBoardList();
     }
+	
+	public void saveReview(ReviewDto review) {
+	    dao.saveReview(review);
+	}
 }

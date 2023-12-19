@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
 import ssg.com.houssg.dto.BoardDto;
+import ssg.com.houssg.dto.ReviewDto;
 import ssg.com.houssg.service.BoardService;
 
 @RestController
@@ -61,4 +62,32 @@ public class BoardController {
         List<BoardDto> boardList = service.getHomeBoardList();
         return ResponseEntity.ok(boardList);
     }
+	
+	// (기존 코드 생략)
+
+	@PostMapping("/saveReview")
+	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto, HttpSession session) {
+	    String userId = (String) session.getAttribute("userId");
+
+	    if (userId != null) {
+	        // 현재 날짜로 createDate 설정
+	        reviewDto.setCreateDate(new Date());
+
+	        // 세션에서 가져온 userId로 설정
+	        reviewDto.setUserId(userId);
+
+	        // boardId 설정
+	        reviewDto.setBoardId(boardId);
+
+	        // 리뷰 저장
+	        service.saveReview(reviewDto);
+
+	        System.out.println("리뷰 저장 성공");
+
+	        return ResponseEntity.ok().build(); // 리뷰 저장 성공 응답
+	    } else {
+	        return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
+	    }
+	}
 }
+
