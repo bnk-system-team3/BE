@@ -8,6 +8,7 @@ import java.util.Map;
 
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
+import ssg.com.houssg.dto.UserProfileDto;
 
 @Mapper
 @Repository
@@ -54,5 +55,7 @@ public interface UserDao {
 
     // 사용자 기술 스택 삽입
     void insertUserTechStack(Map<String, Object> params);
-
+    
+    // 유저 프로필 조회
+    UserProfileDto getUserProfile(String userId);
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
+import ssg.com.houssg.dto.UserProfileDto;
 import ssg.com.houssg.dao.UserDao;
 
 @Service
@@ -98,5 +99,10 @@ public class UserService {
             dao.insertUserTechStack(params);
         }
     }
+    
+    // 유저 프로필 조회
+    public UserProfileDto getUserProfile(String userId) {
+		return dao.getUserProfile(userId);
+	}
 
 }

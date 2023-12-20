@@ -91,13 +91,41 @@
 	</select>
 
 	<insert id="insertUserTechStack" parameterType="java.util.Map">
-		INSERT INTO interestedlanguages (userId, languageId)
-		VALUES (#{userId}, #{languageId})
+		INSERT INTO
+		interestedlanguages (userId, languageId)
+		VALUES (#{userId},
+		#{languageId})
 	</insert>
 
+	<!-- 유저 프로필 조회 -->
+	<select id="getUserProfile" parameterType="java.lang.String"
+		resultMap="userProfileResultMap">
+		SELECT u.userId, u.nickname, u.department, u.email, u.point,
+		u.position,
+		lc.languageName AS techStack
+		FROM user u
+		LEFT JOIN interestedlanguages il ON u.userId = il.userId
+		LEFT JOIN languagecategory lc ON il.languageId = lc.languageId
+		WHERE u.userId = #{userId};
+	</select>
 
+	<!-- UserProfileDto에 대한 resultMap 설정 -->
+	<resultMap id="userProfileResultMap" type="ssg.com.houssg.dto.UserProfileDto">
+		<id property="userId" column="userId" />
+		<result property="nickname" column="nickname" />
+		<result property="department" column="department" />
+		<result property="email" column="email" />
+		<result property="point" column="point" />
+		<result property="position" column="position" />
+		<!-- techStack을 리스트로 처리 -->
+		<collection property="techStack" ofType="java.lang.String"
+			javaType="java.util.ArrayList" resultMap="techStackResultMap" />
+	</resultMap>
 
-
+	<!-- techStack에 대한 resultMap 설정 -->
+	<resultMap id="techStackResultMap" type="java.lang.String">
+		<result column="techStack" property="techStack" />
+	</resultMap>
 
 
 </mapper>

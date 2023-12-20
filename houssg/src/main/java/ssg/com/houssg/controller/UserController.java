@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
-
+import ssg.com.houssg.dto.UserProfileDto;
 import ssg.com.houssg.service.UserService;
 import ssg.com.houssg.util.UserUtil;
 
@@ -165,34 +165,65 @@ public class UserController {
 		user.setPosition(position);
 
 		service.updatePosition(user);
-		
+
 		return ResponseEntity.ok("포지션이 업데이트되었습니다.");
 	}
-	
+
 	// 사용자의 기술 스택 업데이트
 	@PostMapping("update-tech-stack")
 	public ResponseEntity<String> updateTechStack(@RequestParam("techStack") List<String> techStack,
-	                                              HttpSession session) {
+			HttpSession session) {
 
-	    // 세션에서 userId 가져오기
-	    String userId = (String) session.getAttribute("userId");
+		// 세션에서 userId 가져오기
+		String userId = (String) session.getAttribute("userId");
 
-	    if (userId == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
-	    }
+		if (userId == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
+		}
 
-	    try {
-	        // 기존 기술 스택 삭제
-	        service.deleteUserTechStack(userId);
-	        
-	        // 새로운 기술 스택 추가
-	        service.updateUserTechStack(userId, techStack);
+		try {
+			// 기존 기술 스택 삭제
+			service.deleteUserTechStack(userId);
 
-	        return ResponseEntity.ok("기술 스택이 업데이트되었습니다.");
-	    } catch (Exception e) {
-	        // 예외 처리 로직 추가 (예: 로깅)
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("기술 스택 업데이트에 실패했습니다.");
-	    }
+			// 새로운 기술 스택 추가
+			service.updateUserTechStack(userId, techStack);
+
+			return ResponseEntity.ok("기술 스택이 업데이트되었습니다.");
+		} catch (Exception e) {
+			// 예외 처리 로직 추가 (예: 로깅)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("기술 스택 업데이트에 실패했습니다.");
+		}
+	}
+
+	@GetMapping("/findOtherProfile")
+	public ResponseEntity<UserProfileDto> getOtherProfile(@RequestParam String userId) {
+		UserProfileDto userProfile = service.getUserProfile(userId);
+		if (userProfile == null) {
+			// 사용자를 찾을 수 없는 경우
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(userProfile);
+		}
+	}
+
+	@GetMapping("/findUserProfile")
+	public ResponseEntity<UserProfileDto> getUserProfile(HttpSession session) {
+		// 세션에서 userId 가져오기
+		String userId = (String) session.getAttribute("userId");
+
+		if (userId == null) {
+			// 세션에 userId가 없는 경우
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+
+		UserProfileDto userProfile = service.getUserProfile(userId);
+
+		if (userProfile == null) {
+			// 사용자를 찾을 수 없는 경우
+			return ResponseEntity.notFound().build();
+		} else {
+			return ResponseEntity.ok(userProfile);
+		}
 	}
 
 }
