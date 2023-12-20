@@ -80,7 +80,7 @@ CREATE TABLE `INTERESTEDPAGE` (
 );
 
 -- 관심 언어 테이블
-CREATE TABLE `INTERESTEDLABUAGES` (
+CREATE TABLE `INTERESTEDLANGUAGES` (
   `userId` char(7) NOT NULL COMMENT 'ID',
   `languageId` int NOT NULL COMMENT 'Language 테이블의 ID',
   KEY `FK_user_TO_interestedLaguages_1` (`userId`),
