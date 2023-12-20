@@ -17,10 +17,10 @@ public class UserUtil {
             return false;
         }
 
-        if (!isValidUserId(user.getUserId())) {
-            System.out.println("회원가입 실패: 아이디가 유효하지 않습니다.");
-            return false;
-        }
+//        if (!isValidUserId(user.getUserId())) {
+//            System.out.println("회원가입 실패: 아이디가 유효하지 않습니다.");
+//            return false;
+//        }
 
         if (!isValidPassword(user.getPassword())) {
             System.out.println("회원가입 실패: 비밀번호가 유효하지 않습니다.");
@@ -47,10 +47,10 @@ public class UserUtil {
         return true;
     }
 
-    public boolean isValidUserId(String userId) {
-        // 아이디 길이와 특수문자 검사
-        return userId.length() >= 5 && userId.length() <= 10 && Pattern.matches("^[a-zA-Z0-9_]+$", userId);
-    }
+//    public boolean isValidUserId(String userId) {
+//        // 아이디 길이와 특수문자 검사
+//        return userId.length() >= 5 && userId.length() <= 10 && Pattern.matches("^[a-zA-Z0-9_]+$", userId);
+//    }
 
     public boolean isValidPassword(String password) {
         // 비밀번호 길이와 조합 검사

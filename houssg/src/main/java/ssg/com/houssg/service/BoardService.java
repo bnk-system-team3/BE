@@ -58,4 +58,16 @@ public class BoardService {
 	public List<ParticipantBoardDto> getApplicantsForProject(int boardId) {
 		return dao.getApplicantsForProject(boardId);
 	}
+	
+	public List<BoardDto> getBoardByCategory(String category) {
+		return dao.getBoardByCategory(category);
+	}
+	
+	public List<BoardDto> getBoardByKeyword(String keyword) {
+		return dao.getBoardByKeyword(keyword);
+	}
+	
+	public List<BoardDto> getBoardByViewCnt() {
+		return dao.getBoardByViewCnt();
+	}
 }

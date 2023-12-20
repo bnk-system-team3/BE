@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
+import ssg.com.houssg.dto.BoardDto;
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 import ssg.com.houssg.dto.UserProfileDto;
@@ -206,6 +207,7 @@ public class UserController {
 		}
 	}
 
+	// 내 프로필 조회
 	@GetMapping("/findUserProfile")
 	public ResponseEntity<UserProfileDto> getUserProfile(HttpSession session) {
 		// 세션에서 userId 가져오기
@@ -223,6 +225,28 @@ public class UserController {
 			return ResponseEntity.notFound().build();
 		} else {
 			return ResponseEntity.ok(userProfile);
+		}
+	}
+
+	// 마이페이지 - 내가 가입한 보드 조회
+	@GetMapping("/my-boards")
+	public ResponseEntity<List<BoardDto>> getMyBoards(HttpSession session) {
+		// 세션에서 사용자 아이디 가져오기
+		String userId = (String) session.getAttribute("userId");
+
+		// 세션에 사용자 아이디가 없으면 UNAUTHORIZED 응답 반환
+		if (userId == null) {
+			return ResponseEntity.status(401).build();
+		}
+
+		// 사용자가 가입한 게시글 조회
+		List<BoardDto> myBoards = service.getMyboard(userId);
+
+		// 조회 결과에 따라 응답 반환
+		if (myBoards != null && !myBoards.isEmpty()) {
+			return ResponseEntity.ok(myBoards);
+		} else {
+			return ResponseEntity.noContent().build();
 		}
 	}
 

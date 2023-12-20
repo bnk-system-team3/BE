@@ -126,6 +126,13 @@
 	<resultMap id="techStackResultMap" type="java.lang.String">
 		<result column="techStack" property="techStack" />
 	</resultMap>
-
+	
+	 <!-- 마이페이지 - 내가 가입한 모임 조회 -->
+    <select id="getMyboard" parameterType="String" resultType="ssg.com.houssg.dto.BoardDto">
+        SELECT b.category, b.title, b.userId
+        FROM participantboard p
+        JOIN board b ON p.boardId = b.boardId
+        WHERE p.userId = #{userId} AND p.joinFlag = 1;
+    </select>
 
 </mapper>

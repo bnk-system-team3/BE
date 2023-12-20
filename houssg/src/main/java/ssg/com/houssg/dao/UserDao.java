@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
+import ssg.com.houssg.dto.BoardDto;
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 import ssg.com.houssg.dto.UserProfileDto;
@@ -58,4 +59,7 @@ public interface UserDao {
     
     // 유저 프로필 조회
     UserProfileDto getUserProfile(String userId);
+    
+    // 마이페이지 - 내가 가입한 모임 조회
+    List<BoardDto> getMyboard(String userId);
 }

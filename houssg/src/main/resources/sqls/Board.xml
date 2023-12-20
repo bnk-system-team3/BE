@@ -115,10 +115,38 @@
 	<select id="getApplicantsForProject" parameterType="int"
 		resultType="ssg.com.houssg.dto.ParticipantBoardDto">
 		SELECT pb.boardId, pb.userId, pb.joinFlag
-		FROM participantboard pb
+		FROM
+		participantboard pb
 		JOIN user u ON pb.userId = u.userId
-		WHERE pb.boardId = #{boardId}
+		WHERE pb.boardId
+		= #{boardId}
 	</select>
+
+	<!-- 카테고리별 게시글 조회 -->
+	<select id="getBoardByCategory" parameterType="String"
+		resultType="ssg.com.houssg.dto.BoardDto">
+		SELECT boardId, category, dueDate, title, userId, viewCnt
+		FROM board
+		WHERE category = #{category}
+	</select>
+
+	<!-- 키워드 검색 조회 -->
+	<select id="getBoardByKeyword" parameterType="String"
+		resultType="ssg.com.houssg.dto.BoardDto">
+		SELECT boardId, category, dueDate, title, userId, viewCnt
+		FROM board
+		WHERE title LIKE CONCAT('%', #{keyword}, '%') OR description
+		LIKE
+		CONCAT('%', #{keyword}, '%')
+	</select>
+
+	<!-- viewCnt가 가장 높은 순서로 게시글 조회 -->
+	<select id="getBoardByViewCnt" resultType="ssg.com.houssg.dto.BoardDto">
+		SELECT boardId, category, dueDate, title, userId, viewCnt
+		FROM board
+		ORDER BY viewCnt DESC
+	</select>
+
 
 
 </mapper>

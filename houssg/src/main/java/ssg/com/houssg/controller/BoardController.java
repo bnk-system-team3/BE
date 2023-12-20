@@ -26,6 +26,7 @@ public class BoardController {
 	@Autowired
 	private BoardService service;
 
+	// 게시글 작성
 	@PostMapping("/save")
 	public ResponseEntity<?> saveBoard(@RequestBody BoardDto boardDto, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
@@ -48,6 +49,7 @@ public class BoardController {
 		}
 	}
 
+	// 게시글 수정
 	@PatchMapping("/update")
 	public ResponseEntity<?> updateBoard(@RequestParam int boardId, @RequestBody BoardDto boardDto) {
 		// 게시글 수정
@@ -58,14 +60,14 @@ public class BoardController {
 		return ResponseEntity.ok().build(); // 게시글 수정 성공 응답
 	}
 
+	// 홈화면 게시글 조회
 	@GetMapping("/home")
 	public ResponseEntity<List<BoardDto>> getHomeBoardList() {
 		List<BoardDto> boardList = service.getHomeBoardList();
 		return ResponseEntity.ok(boardList);
 	}
 
-	// (기존 코드 생략)
-
+	// 리뷰작성
 	@PostMapping("/saveReview")
 	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto,
 			HttpSession session) {
@@ -116,6 +118,7 @@ public class BoardController {
 		}
 	}
 
+	// 지원상태 업데이트
 	@PatchMapping("/updateApplyStatus")
 	public ResponseEntity<?> updateParticipantStatus(@RequestParam int boardId, @RequestParam int joinFlag,
 			@RequestParam String userId) {
@@ -125,21 +128,43 @@ public class BoardController {
 		return ResponseEntity.ok().build(); // 업데이트 성공 응답
 	}
 
+	// 내가 참가중인 모임 조회
 	@GetMapping("/my-boards")
 	public ResponseEntity<List<BoardDto>> getMyProjects(HttpSession session) {
-	    String userId = (String) session.getAttribute("userId");
-	    if (userId != null) {
-	        List<BoardDto> myProjects = service.getMyProjects(userId);
-	        return ResponseEntity.ok(myProjects);
-	    } else {
-	        return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
-	    }
+		String userId = (String) session.getAttribute("userId");
+		if (userId != null) {
+			List<BoardDto> myProjects = service.getMyProjects(userId);
+			return ResponseEntity.ok(myProjects);
+		} else {
+			return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
+		}
 	}
 
-
+	// 내 모임에 지원한 유저 조회
 	@GetMapping("/applicants")
 	public ResponseEntity<List<ParticipantBoardDto>> getApplicantsForProject(@RequestParam int boardId) {
 		List<ParticipantBoardDto> applicants = service.getApplicantsForProject(boardId);
 		return ResponseEntity.ok(applicants);
+	}
+
+	// 카테고리별 검색
+	@GetMapping("/searchByCategory")
+	public ResponseEntity<List<BoardDto>> getBoardByCategory(@RequestParam String category) {
+		List<BoardDto> boardList = service.getBoardByCategory(category);
+		return ResponseEntity.ok(boardList);
+	}
+
+	// 키워드별 검색
+	@GetMapping("/searchByKeyword")
+	public ResponseEntity<List<BoardDto>> searchByKeyword(@RequestParam String keyword) {
+		List<BoardDto> boardList = service.getBoardByKeyword(keyword);
+		return ResponseEntity.ok(boardList);
+	}
+
+	// viewCnt가 가장 높은 순서로 게시글 조회
+	@GetMapping("/searchByViewCnt")
+	public ResponseEntity<List<BoardDto>> getBoardByViewCnt() {
+		List<BoardDto> boardList = service.getBoardByViewCnt();
+		return ResponseEntity.ok(boardList);
 	}
 }

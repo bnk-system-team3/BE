@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ssg.com.houssg.dto.BoardDto;
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
 import ssg.com.houssg.dto.UserProfileDto;
@@ -82,27 +83,32 @@ public class UserService {
 	}
 
 	// 사용자의 기술 스택 업데이트
-    public void updateUserTechStack(String userId, List<String> techStackList) {
+	public void updateUserTechStack(String userId, List<String> techStackList) {
 
-        // 새로운 기술 스택 추가
-        for (String tech : techStackList) {
-            Map<String, Object> params = new HashMap<>();
+		// 새로운 기술 스택 추가
+		for (String tech : techStackList) {
+			Map<String, Object> params = new HashMap<>();
 
-            params.put("userId", userId);
-            params.put("tech", tech);
-            
-            // languageId 조회
-            Integer languageId = dao.selectLanguageId(tech);
-            params.put("languageId", languageId);
+			params.put("userId", userId);
+			params.put("tech", tech);
 
-            // 사용자 기술 스택 삽입
-            dao.insertUserTechStack(params);
-        }
-    }
-    
-    // 유저 프로필 조회
-    public UserProfileDto getUserProfile(String userId) {
+			// languageId 조회
+			Integer languageId = dao.selectLanguageId(tech);
+			params.put("languageId", languageId);
+
+			// 사용자 기술 스택 삽입
+			dao.insertUserTechStack(params);
+		}
+	}
+
+	// 유저 프로필 조회
+	public UserProfileDto getUserProfile(String userId) {
 		return dao.getUserProfile(userId);
+	}
+
+	// 마이페이지 - 내가 가입한 모임 조회
+	public List<BoardDto> getMyboard(String userId) {
+		return dao.getMyboard(userId);
 	}
 
 }
