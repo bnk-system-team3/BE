@@ -1,6 +1,8 @@
 package ssg.com.houssg.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,15 +58,45 @@ public class UserService {
 	public String findPasswordById(String userId) {
 		return dao.findPasswordById(userId);
 	}
-	
+
 	// 마지막 로그인 날짜 업데이트
 	public void updateLastLoginDate(UserDto user) {
 		dao.updateLastLoginDate(user);
-    }	
-	
+	}
+
 	// 기술스택 조회
 	public List<LanguageCategoryDto> findLanguage() {
-        return dao.findLanguage();
+		return dao.findLanguage();
+	}
+
+	// 포비션 업데이트
+	public void updatePosition(UserDto user) {
+		dao.updatePosition(user);
+	}
+
+	// 사용자의 기술 스택 삭제
+
+	public void deleteUserTechStack(String userId) {
+		dao.deleteUserTechStack(userId);
+	}
+
+	// 사용자의 기술 스택 업데이트
+    public void updateUserTechStack(String userId, List<String> techStackList) {
+
+        // 새로운 기술 스택 추가
+        for (String tech : techStackList) {
+            Map<String, Object> params = new HashMap<>();
+
+            params.put("userId", userId);
+            params.put("tech", tech);
+            
+            // languageId 조회
+            Integer languageId = dao.selectLanguageId(tech);
+            params.put("languageId", languageId);
+
+            // 사용자 기술 스택 삽입
+            dao.insertUserTechStack(params);
+        }
     }
 
 }

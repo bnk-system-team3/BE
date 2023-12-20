@@ -24,7 +24,8 @@
 	<!-- 회원가입 -->
 	<insert id="signUp" parameterType="ssg.com.houssg.dto.UserDto">
 		insert into
-		user(department, nickname, email, password, userId, point)
+		user(department,
+		nickname, email, password, userId, point)
 		values
 		(#{department},#{nickname},#{email}, #{password}, #{userId}, 0)
 	</insert>
@@ -37,11 +38,12 @@
 		user
 		where userId=#{userId} and password=#{password}
 	</select>
-	
+
 	<!-- 마지막 로그인 날짜 업데이트 -->
 	<update id="updateLastLoginDate" parameterType="ssg.com.houssg.dto.UserDto">
 		UPDATE user
-		SET lastLoginDate = #{lastLoginDate} 
+		SET
+		lastLoginDate = #{lastLoginDate}
 		WHERE userId = #{userId}
 	</update>
 
@@ -59,14 +61,43 @@
 		FROM user
 		WHERE userId = #{userId}
 	</select>
-	
+
 	<select id="findLanguage" parameterType="ssg.com.houssg.dto.LanguageCategoryDto"
 		resultType="ssg.com.houssg.dto.LanguageCategoryDto">
 		select languageId, languageName
 		from
 		languagecategory
 	</select>
-	
+
+	<!-- 본인 포지션 변경 -->
+	<update id="updatePosition" parameterType="ssg.com.houssg.dto.UserDto">
+		UPDATE user
+		SET
+		position = #{position}
+		WHERE userId = #{userId}
+	</update>
+
+	<!-- 사용자의 기술 스택 전체 삭제 -->
+	<delete id="deleteUserTechStack" parameterType="java.lang.String">
+		DELETE FROM
+		interestedlanguages WHERE userId = #{userId}
+	</delete>
+
+	<!-- 사용자의 기술 스택 업데이트 -->
+	<select id="selectLanguageId" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT languageId FROM languagecategory WHERE languageName
+		LIKE #{tech}
+	</select>
+
+	<insert id="insertUserTechStack" parameterType="java.util.Map">
+		INSERT INTO interestedlanguages (userId, languageId)
+		VALUES (#{userId}, #{languageId})
+	</insert>
+
+
+
+
 
 
 </mapper>

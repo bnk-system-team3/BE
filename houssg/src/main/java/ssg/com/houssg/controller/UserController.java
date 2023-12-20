@@ -1,12 +1,13 @@
 package ssg.com.houssg.controller;
 
-
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -141,11 +142,57 @@ public class UserController {
 			return ResponseEntity.badRequest().body("비밀번호 재설정에 실패했습니다.");
 		}
 	}
-	
+
 	// 기술스택 조회
 	@GetMapping("/Languagecategories")
-    public ResponseEntity<List<LanguageCategoryDto>> getLanguageCategories() {
-        List<LanguageCategoryDto> languageCategories = service.findLanguage();
-        return ResponseEntity.ok(languageCategories);
-    }
+	public ResponseEntity<List<LanguageCategoryDto>> getLanguageCategories() {
+		List<LanguageCategoryDto> languageCategories = service.findLanguage();
+		return ResponseEntity.ok(languageCategories);
+	}
+
+	// 포지션 업데이트
+	@PatchMapping("update-position")
+	public ResponseEntity<String> updatePosition(@RequestParam("position") String position, HttpSession session) {
+
+		String userId = (String) session.getAttribute("userId");
+
+		if (userId == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
+		}
+
+		UserDto user = new UserDto();
+		user.setUserId(userId);
+		user.setPosition(position);
+
+		service.updatePosition(user);
+		
+		return ResponseEntity.ok("포지션이 업데이트되었습니다.");
+	}
+	
+	// 사용자의 기술 스택 업데이트
+	@PostMapping("update-tech-stack")
+	public ResponseEntity<String> updateTechStack(@RequestParam("techStack") List<String> techStack,
+	                                              HttpSession session) {
+
+	    // 세션에서 userId 가져오기
+	    String userId = (String) session.getAttribute("userId");
+
+	    if (userId == null) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
+	    }
+
+	    try {
+	        // 기존 기술 스택 삭제
+	        service.deleteUserTechStack(userId);
+	        
+	        // 새로운 기술 스택 추가
+	        service.updateUserTechStack(userId, techStack);
+
+	        return ResponseEntity.ok("기술 스택이 업데이트되었습니다.");
+	    } catch (Exception e) {
+	        // 예외 처리 로직 추가 (예: 로깅)
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("기술 스택 업데이트에 실패했습니다.");
+	    }
+	}
+
 }

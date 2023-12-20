@@ -11,9 +11,16 @@ public class UserDto {
 	private String department;
 	private Date lastLoginDate;
 	private int point;
+	private String position;
 	
 	
 	
+	public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
+	}
 	public String getUserId() {
 		return userId;
 	}
@@ -57,15 +64,13 @@ public class UserDto {
 		this.point = point;
 	}
 	
-	
 	@Override
 	public String toString() {
 		return "UserDto [userId=" + userId + ", password=" + password + ", nickname=" + nickname + ", email=" + email
-				+ ", department=" + department + ", lastLoginDate=" + lastLoginDate + ", point=" + point + "]";
+				+ ", department=" + department + ", lastLoginDate=" + lastLoginDate + ", point=" + point + ", position="
+				+ position + "]";
 	}
-
 	
-
 	
 
 }

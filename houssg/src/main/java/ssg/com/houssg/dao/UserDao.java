@@ -4,6 +4,7 @@ package ssg.com.houssg.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Map;
 
 import ssg.com.houssg.dto.LanguageCategoryDto;
 import ssg.com.houssg.dto.UserDto;
@@ -41,5 +42,17 @@ public interface UserDao {
 	
 	// 기술스택 조회
 	List<LanguageCategoryDto> findLanguage();
+	
+	// 포지션 업데이트
+	void updatePosition(UserDto user);
+	
+	// 사용자의 기술 스택 삭제
+	void deleteUserTechStack(String userId);
+
+	// languageName을 기반으로 languageId 선택
+    Integer selectLanguageId(String tech);
+
+    // 사용자 기술 스택 삽입
+    void insertUserTechStack(Map<String, Object> params);
 
 }
