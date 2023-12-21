@@ -9,9 +9,17 @@ public class CommentDto {
 	private int cmtId;
 	private String cmt;
 	private Date createDate;
+	private String nickname;
 	
 	
 	
+	
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 	public Date getCreateDate() {
 		return createDate;
 	}

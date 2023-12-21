@@ -22,10 +22,12 @@ public class CommentController {
 	public ResponseEntity<?> saveComment(@RequestBody CommentDto commentDto, @RequestParam int boardId,
 			HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
+		String nickname = (String) session.getAttribute("nickname");
 
 		if (userId != null) {
 			// 세션에서 가져온 userId로 설정
 			commentDto.setUserId(userId);
+			commentDto.setNickname(nickname);
 			// 리퀘스트 파라미터로 받은 boardId로 설정
 			commentDto.setBoardId(boardId);
 			commentDto.setCreateDate(new Date());

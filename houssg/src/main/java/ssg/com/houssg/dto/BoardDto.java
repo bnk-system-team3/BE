@@ -21,9 +21,16 @@ public class BoardDto {
 	private int viewCnt;
 	private String category;
 	private String teamContent;
+	private String nickname;
 
-	
-	
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 	public String getTeamContent() {
 		return teamContent;
 	}
@@ -167,8 +174,7 @@ public class BoardDto {
 				+ ", activeFlag=" + activeFlag + ", chattingUrl=" + chattingUrl + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", createDate=" + createDate + ", userId=" + userId + ", dueDate=" + dueDate
 				+ ", location=" + location + ", viewCnt=" + viewCnt + ", category=" + category + ", teamContent="
-				+ teamContent + "]";
+				+ teamContent + ", nickname=" + nickname + "]";
 	}
-
 
 }
