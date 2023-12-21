@@ -75,5 +75,9 @@ public interface BoardDao {
 
     // 포지션 정보 조회
     List<String> getPositions(int boardId);
+    
+    // 조회수 증가
+    void incrementViewCount(int boardId);
+
 
 }

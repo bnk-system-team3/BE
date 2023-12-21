@@ -182,6 +182,11 @@
 		VALUES (#{boardId}, #{positionId})
 	</insert>
 
+	<!-- viewCnt 1 증가 -->
+	<update id="incrementViewCount" parameterType="int">
+		UPDATE board SET viewCnt = viewCnt + 1 WHERE boardId = #{boardId}
+	</update>
+
 	<select id="selectNeedPosition" parameterType="java.lang.String"
 		resultType="java.lang.Integer">
 		SELECT positionId FROM positioncategory WHERE positionName
@@ -205,15 +210,19 @@
 
 	<!-- 기술 스택 정보 조회 -->
 	<select id="getTechStack" parameterType="int" resultType="String">
-		SELECT languageName FROM techstack t
-		JOIN languagecategory lc ON t.languageId = lc.languageId
+		SELECT
+		languageName FROM techstack t
+		JOIN languagecategory lc ON t.languageId
+		= lc.languageId
 		WHERE t.boardId = #{boardId}
 	</select>
 
 	<!-- 포지션 정보 조회 -->
 	<select id="getPositions" parameterType="int" resultType="String">
-		SELECT positionName FROM needposition np
-		JOIN positioncategory pc ON np.positionId = pc.positionId
+		SELECT
+		positionName FROM needposition np
+		JOIN positioncategory pc ON
+		np.positionId = pc.positionId
 		WHERE np.boardId = #{boardId}
 	</select>
 

@@ -227,8 +227,9 @@ public class BoardController {
 	@GetMapping("/getBoardDetails")
 	public ResponseEntity<?> getBoardDetails(@RequestParam int boardId) {
 	    // 게시글 상세 정보 및 기술 스택, 포지션 정보 조회
+		service.incrementViewCount(boardId);
 	    Map<String, Object> boardDetails = service.getBoardDetails(boardId);
-
+	    
 	    if (boardDetails != null && !boardDetails.isEmpty()) {
 	        return ResponseEntity.ok(boardDetails);
 	    } else {

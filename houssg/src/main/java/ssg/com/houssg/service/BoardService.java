@@ -125,5 +125,9 @@ public class BoardService {
 			return null;
 		}
 	}
+	
+	public void incrementViewCount(int boardId) {
+	    dao.incrementViewCount(boardId);
+	}
 
 }
