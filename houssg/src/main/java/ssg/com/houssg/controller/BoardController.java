@@ -129,7 +129,7 @@ public class BoardController {
 	}
 
 	// 내가 참가중인 모임 조회
-	@GetMapping("/my-boards")
+	@GetMapping("/myBoards")
 	public ResponseEntity<List<BoardDto>> getMyProjects(HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
 		if (userId != null) {

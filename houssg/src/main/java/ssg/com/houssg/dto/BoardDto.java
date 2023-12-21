@@ -20,9 +20,18 @@ public class BoardDto {
 	private String location;
 	private int viewCnt;
 	private String category;
+	private String teamContent;
 
 	
 	
+	public String getTeamContent() {
+		return teamContent;
+	}
+
+	public void setTeamContent(String teamContent) {
+		this.teamContent = teamContent;
+	}
+
 	public String getCategory() {
 		return category;
 	}
@@ -157,9 +166,9 @@ public class BoardDto {
 				+ ", participantCnt=" + participantCnt + ", recruitCnt=" + recruitCnt + ", onOffStatus=" + onOffStatus
 				+ ", activeFlag=" + activeFlag + ", chattingUrl=" + chattingUrl + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", createDate=" + createDate + ", userId=" + userId + ", dueDate=" + dueDate
-				+ ", location=" + location + ", viewCnt=" + viewCnt + ", category=" + category + "]";
+				+ ", location=" + location + ", viewCnt=" + viewCnt + ", category=" + category + ", teamContent="
+				+ teamContent + "]";
 	}
 
-	
 
 }

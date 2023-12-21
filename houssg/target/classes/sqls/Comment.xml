@@ -7,8 +7,8 @@
 
 	<!-- 댓글 저장 -->
     <insert id="saveComment" parameterType="ssg.com.houssg.dto.CommentDto">
-        INSERT INTO comment (boardId, userId, cmt)
-        VALUES (#{boardId}, #{userId}, #{cmt})
+        INSERT INTO comment (boardId, userId, cmt, createDate)
+        VALUES (#{boardId}, #{userId}, #{cmt},#{createDate})
     </insert>
 
     <!-- 댓글 수정 -->

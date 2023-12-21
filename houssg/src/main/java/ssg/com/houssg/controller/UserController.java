@@ -33,7 +33,7 @@ public class UserController {
 	private UserUtil userUtil;
 
 	// 로그인
-	@PostMapping("/log-in")
+	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody UserDto user, HttpSession session) {
 		System.out.println("UserController login(UserDto user) " + new Date());
 		System.out.println("클라이언트로 부터 받은 데이터 : " + user.toString());
@@ -60,7 +60,7 @@ public class UserController {
 	}
 
 	// 로그아웃
-	@PostMapping("/log-out")
+	@PostMapping("/logout")
 	public ResponseEntity<?> logout(HttpSession session) {
 		// 세션을 무효화하여 로그아웃 처리
 		session.invalidate();
@@ -69,7 +69,7 @@ public class UserController {
 	}
 
 	// 닉네임 중복확인
-	@PostMapping("nickname-check")
+	@PostMapping("nicknameCheck")
 	public String nicknameCheck(String nickname) {
 		System.out.println("UserController nicknameCheck(String nickname) " + new Date());
 
@@ -82,7 +82,7 @@ public class UserController {
 	}
 
 	// 회원가입
-	@PostMapping("/sign-up")
+	@PostMapping("/signUp")
 	public String signUp(@RequestBody UserDto user) {
 		System.out.println("UserController signUp(UserDto dto) " + new Date());
 
@@ -104,7 +104,7 @@ public class UserController {
 	}
 
 	// 비밀번호 변경
-	@PostMapping("update-pw")
+	@PostMapping("updatePw")
 	public ResponseEntity<String> updatePassword(@RequestParam("userId") String userId,
 			@RequestParam("newPassword") String newPassword) {
 		UserUtil userUtil = new UserUtil();
@@ -145,14 +145,14 @@ public class UserController {
 	}
 
 	// 기술스택 조회
-	@GetMapping("/Languagecategories")
+	@GetMapping("/languageCategories")
 	public ResponseEntity<List<LanguageCategoryDto>> getLanguageCategories() {
 		List<LanguageCategoryDto> languageCategories = service.findLanguage();
 		return ResponseEntity.ok(languageCategories);
 	}
 
 	// 포지션 업데이트
-	@PatchMapping("update-position")
+	@PatchMapping("updatePosition")
 	public ResponseEntity<String> updatePosition(@RequestParam("position") String position, HttpSession session) {
 
 		String userId = (String) session.getAttribute("userId");
@@ -171,7 +171,7 @@ public class UserController {
 	}
 
 	// 사용자의 기술 스택 업데이트
-	@PostMapping("update-tech-stack")
+	@PostMapping("updateTechStack")
 	public ResponseEntity<String> updateTechStack(@RequestParam("techStack") List<String> techStack,
 			HttpSession session) {
 
@@ -229,7 +229,7 @@ public class UserController {
 	}
 
 	// 마이페이지 - 내가 가입한 보드 조회
-	@GetMapping("/my-boards")
+	@GetMapping("/myBoards")
 	public ResponseEntity<List<BoardDto>> getMyBoards(HttpSession session) {
 		// 세션에서 사용자 아이디 가져오기
 		String userId = (String) session.getAttribute("userId");

@@ -142,10 +142,22 @@
 
 	<!-- viewCnt가 가장 높은 순서로 게시글 조회 -->
 	<select id="getBoardByViewCnt" resultType="ssg.com.houssg.dto.BoardDto">
-		SELECT boardId, category, dueDate, title, userId, viewCnt
+		SELECT boardId,
+		category, dueDate, title, userId, viewCnt
 		FROM board
-		ORDER BY viewCnt DESC
+		ORDER BY viewCnt
+		DESC
 	</select>
+
+	<!-- 팀 페이지 작성-->
+	<update id="updateTeamContent" parameterType="ssg.com.houssg.dto.BoardDto">
+		UPDATE board
+		SET
+		teamContent = #{teamContent}
+		WHERE
+		boardId =
+		#{boardId}
+	</update>
 
 
 

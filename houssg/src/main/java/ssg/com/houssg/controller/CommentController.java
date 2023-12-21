@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import ssg.com.houssg.dto.CommentDto;
 import ssg.com.houssg.service.CommentService;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,7 @@ public class CommentController {
 			commentDto.setUserId(userId);
 			// 리퀘스트 파라미터로 받은 boardId로 설정
 			commentDto.setBoardId(boardId);
+			commentDto.setCreateDate(new Date());
 
 			// 댓글 저장
 			commentService.saveComment(commentDto);
