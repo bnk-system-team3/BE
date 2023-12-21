@@ -1,5 +1,6 @@
 package ssg.com.houssg.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,8 +100,30 @@ public class BoardService {
 		// 포지션 삽입
 		dao.insertNeedPosition(params);
 	}
-	
+
 	public int findBoardId(String userId) {
 		return dao.findBoardId(userId);
 	}
+
+	public Map<String, Object> getBoardDetails(int boardId) {
+		// 게시글 상세 정보 조회
+		BoardDto boardDetails = dao.getBoardDetails(boardId);
+
+		if (boardDetails != null) {
+			// 기술 스택 및 포지션 정보 조회
+			List<String> techStack = dao.getTechStack(boardId);
+			List<String> positions = dao.getPositions(boardId);
+
+			// 결과를 Map으로 구성
+			Map<String, Object> result = new HashMap<>();
+			result.put("boardDetails", boardDetails);
+			result.put("techStack", techStack);
+			result.put("positions", positions);
+
+			return result;
+		} else {
+			return null;
+		}
+	}
+
 }

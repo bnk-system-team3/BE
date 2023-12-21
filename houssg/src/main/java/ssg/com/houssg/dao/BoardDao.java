@@ -66,4 +66,14 @@ public interface BoardDao {
     Integer selectNeedPosition(String position);
     
     int findBoardId(String userId);
+    
+    // 게시글 상세 정보 조회
+    BoardDto getBoardDetails(int boardId);
+
+    // 기술 스택 정보 조회
+    List<String> getTechStack(int boardId);
+
+    // 포지션 정보 조회
+    List<String> getPositions(int boardId);
+
 }

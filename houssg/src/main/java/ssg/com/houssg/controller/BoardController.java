@@ -2,6 +2,7 @@ package ssg.com.houssg.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class BoardController {
 			// 세션에서 가져온 userId로 설정
 			boardDto.setUserId(userId);
 			boardDto.setNickname(nickname);
-			
+
 			// 게시글 저장
 			service.saveBoard(boardDto);
 
@@ -69,9 +70,9 @@ public class BoardController {
 			service.saveBoard(boardDto);
 
 			// 게시글 저장 후, 기술 스택 및 포지션 삽입
-			
+
 			int boardId = (int) service.findBoardId(userId);
-			
+
 			System.out.println("Saved boardId: " + boardId);
 			// 기술 스택 삽입
 			if (techStack != null) {
@@ -222,4 +223,18 @@ public class BoardController {
 
 		service.updateTeamContent(boardDto);
 	}
+
+	@GetMapping("/getBoardDetails")
+	public ResponseEntity<?> getBoardDetails(@RequestParam int boardId) {
+	    // 게시글 상세 정보 및 기술 스택, 포지션 정보 조회
+	    Map<String, Object> boardDetails = service.getBoardDetails(boardId);
+
+	    if (boardDetails != null && !boardDetails.isEmpty()) {
+	        return ResponseEntity.ok(boardDetails);
+	    } else {
+	        return ResponseEntity.notFound().build();
+	    }
+	}
+
+
 }
