@@ -1,6 +1,7 @@
 package ssg.com.houssg.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -51,4 +52,18 @@ public interface BoardDao {
 	
 	// 팀컨텐츠 작성 및 수정
 	void updateTeamContent(BoardDto boardDto);
+	
+	// 기술 스택 삽입 메서드
+    void insertTechStack(Map<String, Object> params);
+
+    // 언어 ID 조회 메서드
+    Integer selectLanguageId(String tech);
+    
+    // 포지션 삽입 메서드
+    void insertNeedPosition(Map<String, Object> params);
+
+    // 포지션 ID 조회 메서드
+    Integer selectNeedPosition(String position);
+    
+    int findBoardId(String userId);
 }

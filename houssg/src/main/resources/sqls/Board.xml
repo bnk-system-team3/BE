@@ -17,9 +17,11 @@
 		(#{title}, #{description},
 		1, #{recruitCnt}, #{onOffStatus}, 1,
 		#{chattingUrl},
-		#{startDate}, #{endDate}, #{createDate}, #{userId},
+		#{startDate},
+		#{endDate}, #{createDate}, #{userId},
 		#{dueDate},
-		#{location}, 0, #{category}, #{nickname})
+		#{location}, 0,
+		#{category}, #{nickname})
 	</insert>
 
 	<!-- 게시글 수정 -->
@@ -149,7 +151,7 @@
 		DESC
 	</select>
 
-	<!-- 팀 페이지 작성-->
+	<!-- 팀 페이지 작성 -->
 	<update id="updateTeamContent" parameterType="ssg.com.houssg.dto.BoardDto">
 		UPDATE board
 		SET
@@ -159,6 +161,38 @@
 		#{boardId}
 	</update>
 
+	<!-- 기술 스택 삽입 쿼리 -->
+	<insert id="insertTechStack" parameterType="map">
+		INSERT INTO techstack (boardId, languageId)
+		VALUES (#{boardId}, #{languageId})
+	</insert>
+
+	<select id="selectLanguageId" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT languageId FROM languagecategory WHERE languageName
+		LIKE #{tech}
+	</select>
+
+
+	<!-- 포지션 삽입 쿼리 -->
+	<insert id="insertNeedPosition" parameterType="map">
+		INSERT INTO needposition (boardId, positionId)
+		VALUES (#{boardId}, #{positionId})
+	</insert>
+
+	<select id="selectNeedPosition" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT positionId FROM positioncategory WHERE positionName
+		LIKE #{position}
+	</select>
+
+	<select id="findBoardId" resultType="java.lang.Integer">
+		SELECT boardId
+		FROM board
+		WHERE userId = #{userId}
+		ORDER BY createDate DESC
+		LIMIT 1;
+	</select>
 
 
 </mapper>

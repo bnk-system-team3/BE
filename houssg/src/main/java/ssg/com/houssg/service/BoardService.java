@@ -1,6 +1,7 @@
 package ssg.com.houssg.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,20 +59,48 @@ public class BoardService {
 	public List<ParticipantBoardDto> getApplicantsForProject(int boardId) {
 		return dao.getApplicantsForProject(boardId);
 	}
-	
+
 	public List<BoardDto> getBoardByCategory(String category) {
 		return dao.getBoardByCategory(category);
 	}
-	
+
 	public List<BoardDto> getBoardByKeyword(String keyword) {
 		return dao.getBoardByKeyword(keyword);
 	}
-	
+
 	public List<BoardDto> getBoardByViewCnt() {
 		return dao.getBoardByViewCnt();
 	}
-	
+
 	public void updateTeamContent(BoardDto boardDto) {
-        dao.updateTeamContent(boardDto);
-    }
+		dao.updateTeamContent(boardDto);
+	}
+
+	// 기술 스택 삽입 메서드
+	public void insertTechStack(int boardId, String tech) {
+		// 언어 ID 조회
+		Integer languageId = dao.selectLanguageId(tech);
+
+		// 맵에 파라미터 설정
+		Map<String, Object> params = Map.of("boardId", boardId, "languageId", languageId);
+
+		// 기술 스택 삽입
+		dao.insertTechStack(params);
+	}
+
+	// 포지션 삽입 메서드
+	public void insertNeedPosition(int boardId, String position) {
+		// 포지션 ID 조회
+		Integer positionId = dao.selectNeedPosition(position);
+
+		// 맵에 파라미터 설정
+		Map<String, Object> params = Map.of("boardId", boardId, "positionId", positionId);
+
+		// 포지션 삽입
+		dao.insertNeedPosition(params);
+	}
+	
+	public int findBoardId(String userId) {
+		return dao.findBoardId(userId);
+	}
 }
