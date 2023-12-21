@@ -12,14 +12,14 @@
 		(title,
 		description, participantCnt, recruitCnt, onOffStatus, activeFlag,
 		chattingUrl, startDate, endDate, createDate, userId, dueDate,
-		location, viewCnt, category)
+		location, viewCnt, category, nickname)
 		VALUES
 		(#{title}, #{description},
-		#{participantCnt}, #{recruitCnt}, #{onOffStatus}, 1,
+		1, #{recruitCnt}, #{onOffStatus}, 1,
 		#{chattingUrl},
 		#{startDate}, #{endDate}, #{createDate}, #{userId},
 		#{dueDate},
-		#{location}, 0, #{category})
+		#{location}, 0, #{category}, #{nickname})
 	</insert>
 
 	<!-- 게시글 수정 -->

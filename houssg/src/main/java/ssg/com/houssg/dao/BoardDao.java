@@ -48,4 +48,7 @@ public interface BoardDao {
 
 	// viewCnt가 가장 높은 순서로 게시글 조회
 	List<BoardDto> getBoardByViewCnt();
+	
+	// 팀컨텐츠 작성 및 수정
+	void updateTeamContent(BoardDto boardDto);
 }

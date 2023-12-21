@@ -70,4 +70,8 @@ public class BoardService {
 	public List<BoardDto> getBoardByViewCnt() {
 		return dao.getBoardByViewCnt();
 	}
+	
+	public void updateTeamContent(BoardDto boardDto) {
+        dao.updateTeamContent(boardDto);
+    }
 }

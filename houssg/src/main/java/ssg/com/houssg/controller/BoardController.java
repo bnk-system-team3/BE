@@ -30,6 +30,7 @@ public class BoardController {
 	@PostMapping("/save")
 	public ResponseEntity<?> saveBoard(@RequestBody BoardDto boardDto, HttpSession session) {
 		String userId = (String) session.getAttribute("userId");
+		String nickname = (String) session.getAttribute("nickname");
 
 		if (userId != null) {
 			// 현재 날짜로 createDate 설정
@@ -37,7 +38,8 @@ public class BoardController {
 
 			// 세션에서 가져온 userId로 설정
 			boardDto.setUserId(userId);
-
+			boardDto.setNickname(nickname);
+			
 			// 게시글 저장
 			service.saveBoard(boardDto);
 
@@ -167,4 +169,13 @@ public class BoardController {
 		List<BoardDto> boardList = service.getBoardByViewCnt();
 		return ResponseEntity.ok(boardList);
 	}
+	
+	// 팀 컨텐츠 작성 및 수정
+    @PostMapping("/updateTeamContent")
+    public void updateTeamContent(@RequestParam int boardId, @RequestBody BoardDto boardDto) {
+       
+        boardDto.setBoardId(boardId);
+        
+        service.updateTeamContent(boardDto);
+    }
 }
