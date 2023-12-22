@@ -53,47 +53,37 @@ public class BoardController {
 	}
 
 	@PostMapping("/saveStudyProjectBoard")
-	public ResponseEntity<?> saveBoard(@RequestBody BoardDto boardDto, HttpSession session,
-			@RequestParam("techStack") List<String> techStack, @RequestParam("positions") List<String> positions) {
-		String userId = (String) session.getAttribute("userId");
-		String nickname = (String) session.getAttribute("nickname");
-
-		if (userId != null) {
+	public ResponseEntity<?> saveStudyProjectBoard(@RequestBody BoardDto boardDto){
 			// 현재 날짜로 createDate 설정
+			System.out.println("1번");
 			boardDto.setCreateDate(new Date());
-
-			// 세션에서 가져온 userId로 설정
-			boardDto.setUserId(userId);
-			boardDto.setNickname(nickname);
-
+			System.out.println("2번");
 			// 게시글 저장
 			service.saveBoard(boardDto);
-
+			System.out.println(boardDto.toString());
+			System.out.println("3번");
 			// 게시글 저장 후, 기술 스택 및 포지션 삽입
-
-			int boardId = (int) service.findBoardId(userId);
-
+			System.out.println(boardDto.getUserId());
+			int boardId = (int) service.findBoardId(boardDto.getUserId());
+			
 			System.out.println("Saved boardId: " + boardId);
 			// 기술 스택 삽입
-			if (techStack != null) {
-				for (String tech : techStack) {
-					service.insertTechStack(boardId, tech);
-				}
-			}
+			
+			if (boardDto.getTechStack() != null) {
+		        for (String tech : boardDto.getTechStack()) {
+		            service.insertTechStack(boardId, tech);
+		        }
+		    }
 
-			// 포지션 삽입
-			if (positions != null) {
-				for (String position : positions) {
-					service.insertNeedPosition(boardId, position);
-				}
-			}
-
+		    if (boardDto.getPositions() != null) {
+		        for (String position : boardDto.getPositions()) {
+		            service.insertNeedPosition(boardId, position);
+		        }
+		    }
 			System.out.println("게시글 저장 및 기술 스택, 포지션 삽입 성공");
 
 			return ResponseEntity.ok().build(); // 게시글 저장 성공 응답
-		} else {
-			return ResponseEntity.badRequest().build(); // 세션에 사용자 아이디가 없으면 실패 응답
-		}
+		
 	}
 
 	// 게시글 수정

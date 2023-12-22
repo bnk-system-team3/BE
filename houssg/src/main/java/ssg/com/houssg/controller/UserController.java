@@ -47,7 +47,7 @@ public class UserController {
 			session.setAttribute("nickname", dto.getNickname());
 			session.setAttribute("point", dto.getPoint());
 			session.setAttribute("department", dto.getDepartment());
-
+			System.out.println(dto.getUserId());
 			user.setLastLoginDate(new Date());
 			service.updateLastLoginDate(user);
 

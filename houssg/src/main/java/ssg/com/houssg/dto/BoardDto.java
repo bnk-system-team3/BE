@@ -1,6 +1,7 @@
 package ssg.com.houssg.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public class BoardDto {
 
@@ -22,6 +23,25 @@ public class BoardDto {
 	private String category;
 	private String teamContent;
 	private String nickname;
+	
+	private List<String> techStack;
+    private List<String> positions;
+
+    public List<String> getTechStack() {
+        return techStack;
+    }
+
+    public void setTechStack(List<String> techStack) {
+        this.techStack = techStack;
+    }
+
+    public List<String> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(List<String> positions) {
+        this.positions = positions;
+    }
 
 	public String getNickname() {
 		return nickname;
