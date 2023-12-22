@@ -19,6 +19,7 @@ import ssg.com.houssg.dto.BoardDto;
 import ssg.com.houssg.dto.ParticipantBoardDto;
 import ssg.com.houssg.dto.ReviewDto;
 import ssg.com.houssg.service.BoardService;
+import ssg.com.houssg.service.UserService;
 
 @RestController
 @RequestMapping("board")
@@ -26,12 +27,16 @@ public class BoardController {
 
 	@Autowired
 	private BoardService service;
+	
+	@Autowired
+	private UserService userService;
 
 	// 게시글 작성
 	@PostMapping("/saveBoard")
-	public ResponseEntity<?> saveBoard(@RequestBody BoardDto boardDto, HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
-		String nickname = (String) session.getAttribute("nickname");
+	public ResponseEntity<?> saveBoard(@RequestBody BoardDto boardDto) {
+		String userId = (String) boardDto.getUserId();
+		String nickname = (String) userService.getUserProfile(userId).getNickname(); 
+			
 
 		if (userId != null) {
 			// 현재 날짜로 createDate 설정
@@ -55,20 +60,22 @@ public class BoardController {
 	@PostMapping("/saveStudyProjectBoard")
 	public ResponseEntity<?> saveStudyProjectBoard(@RequestBody BoardDto boardDto) {
 		// 현재 날짜로 createDate 설정
-		System.out.println("1번");
 		boardDto.setCreateDate(new Date());
-		System.out.println("2번");
+		String userId = (String) boardDto.getUserId();
+		String nickname = (String) userService.getUserProfile(userId).getNickname(); 
+		boardDto.setNickname(nickname);
+		
 		// 게시글 저장
 		service.saveBoard(boardDto);
 		System.out.println(boardDto.toString());
-		System.out.println("3번");
+
 		// 게시글 저장 후, 기술 스택 및 포지션 삽입
 		System.out.println(boardDto.getUserId());
 		int boardId = (int) service.findBoardId(boardDto.getUserId());
 
 		System.out.println("Saved boardId: " + boardId);
+		
 		// 기술 스택 삽입
-
 		if (boardDto.getTechStack() != null) {
 			for (String tech : boardDto.getTechStack()) {
 				service.insertTechStack(boardId, tech);
@@ -106,9 +113,8 @@ public class BoardController {
 
 	// 리뷰작성
 	@PostMapping("/saveReview")
-	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto,
-			HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
+	public ResponseEntity<?> saveReview(@RequestParam int boardId, @RequestBody ReviewDto reviewDto) {
+		String userId = (String) reviewDto.getUserId();
 
 		if (userId != null) {
 			// 현재 날짜로 createDate 설정
@@ -133,8 +139,9 @@ public class BoardController {
 
 	// 지원자 참가신청
 	@PostMapping("/apply")
-	public ResponseEntity<?> applyForParticipation(@RequestParam int boardId, HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
+	public ResponseEntity<?> applyForParticipation(@RequestBody BoardDto boardDto) {
+		String userId = (String) boardDto.getUserId();
+		int boardId = (int) boardDto.getBoardId();
 
 		if (userId != null) {
 			// 모임 참가 신청 정보 생성
@@ -157,7 +164,9 @@ public class BoardController {
 
 	// 지원상태 업데이트
 	@PatchMapping("/updateApplyStatus")
-	public ResponseEntity<?> updateParticipantStatus(@RequestParam int boardId, @RequestParam int joinFlag,
+	public ResponseEntity<?> updateParticipantStatus(
+			@RequestParam int boardId, 
+			@RequestParam int joinFlag,
 			@RequestParam String userId) {
 
 		service.updateParticipantStatus(boardId, joinFlag, userId);

@@ -105,7 +105,8 @@ public class UserController {
 
 	// 비밀번호 변경
 	@PostMapping("updatePw")
-	public ResponseEntity<String> updatePassword(@RequestParam("userId") String userId,
+	public ResponseEntity<String> updatePassword(
+			@RequestParam("userId") String userId,
 			@RequestParam("newPassword") String newPassword) {
 		UserUtil userUtil = new UserUtil();
 
@@ -151,9 +152,10 @@ public class UserController {
 		return ResponseEntity.ok(languageCategories);
 	}
 
-	// 포지션 업데이트
+	// 포지션 업데이트 - 포지션만 업데이트하는 부분이 존재하지 않기 때문에 session 놔둠
 	@PatchMapping("updatePosition")
-	public ResponseEntity<String> updatePosition(@RequestParam("position") String position, HttpSession session) {
+	public ResponseEntity<String> updatePosition(
+			@RequestParam("position") String position, HttpSession session) {
 
 		String userId = (String) session.getAttribute("userId");
 
@@ -170,9 +172,10 @@ public class UserController {
 		return ResponseEntity.ok("포지션이 업데이트되었습니다.");
 	}
 
-	// 사용자의 기술 스택 업데이트
+	// 사용자의 기술 스택 업데이트 - 기술 스택만 업데이트하는 부분이 없으므로 session 그대로 둠
 	@PostMapping("updateTechStack")
-	public ResponseEntity<String> updateTechStack(@RequestParam("techStack") List<String> techStack,
+	public ResponseEntity<String> updateTechStack(
+			@RequestParam("techStack") List<String> techStack,
 			HttpSession session) {
 
 		// 세션에서 userId 가져오기
@@ -209,10 +212,7 @@ public class UserController {
 
 	// 내 프로필 조회
 	@GetMapping("/findUserProfile")
-	public ResponseEntity<UserProfileDto> getUserProfile(HttpSession session) {
-		// 세션에서 userId 가져오기
-		String userId = (String) session.getAttribute("userId");
-
+	public ResponseEntity<UserProfileDto> getUserProfile(@RequestParam String userId) {
 		if (userId == null) {
 			// 세션에 userId가 없는 경우
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -230,10 +230,10 @@ public class UserController {
 
 	// 마이페이지 - 내가 가입한 보드 조회
 	@GetMapping("/myBoards")
-	public ResponseEntity<List<BoardDto>> getMyBoards(HttpSession session) {
+	public ResponseEntity<List<BoardDto>> getMyBoards(@RequestParam String userId) {
 		// 세션에서 사용자 아이디 가져오기
-		String userId = (String) session.getAttribute("userId");
-
+		System.out.println(userId);
+		
 		// 세션에 사용자 아이디가 없으면 UNAUTHORIZED 응답 반환
 		if (userId == null) {
 			return ResponseEntity.status(401).build();
@@ -252,19 +252,19 @@ public class UserController {
 
 	// 사용자 프로필 업데이트
 	@PostMapping("updateProfile")
-	public ResponseEntity<String> updateProfile(
-			@RequestParam("techStack") List<String> techStack,
-			@RequestParam("position") String position,
-			@RequestParam("nickname") String nickName,
-			@RequestParam("userId") String userId,
-			HttpSession session) {
-		// String userId = (String) session.getAttribute("userId");
+	public ResponseEntity<String> updateProfile(@RequestBody UserProfileDto userProfileDto) {
+		String userId = (String) userProfileDto.getUserId();
+		String position = (String) userProfileDto.getPosition();
+		String nickName = (String) userProfileDto.getNickname();
+		List<String> techStack = (List<String>) userProfileDto.getTechStack();
 
+		System.out.println("updateProfile");
+		System.out.println(userProfileDto.toString());
 		if (userId == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
 		}
 		
-		// Nick Name 변경
+		// NickName 변경
 		service.changeNickname(userId, nickName);
 
 		// Position 변경

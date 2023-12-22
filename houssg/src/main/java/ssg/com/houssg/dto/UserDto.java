@@ -13,8 +13,6 @@ public class UserDto {
 	private int point;
 	private String position;
 	
-	
-	
 	public String getPosition() {
 		return position;
 	}

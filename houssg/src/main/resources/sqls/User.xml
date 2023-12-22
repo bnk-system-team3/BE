@@ -15,10 +15,9 @@
 	</select>
 
 	<!-- 닉네임 변경 -->
-	<update id="changeNickname">
-		update user set nickname = #{nickname}
-		where userId =
-		#{userId};
+	<update id="changeNickname" parameterType="ssg.com.houssg.dto.UserDto">
+		UPDATE user SET nickname = #{nickname}
+		WHERE userId = #{userId};
 	</update>
 
 	<!-- 회원가입 -->
