@@ -250,4 +250,40 @@ public class UserController {
 		}
 	}
 
+	// 사용자 프로필 업데이트
+	@PostMapping("updateProfile")
+	public ResponseEntity<String> updateProfile(
+			@RequestParam("techStack") List<String> techStack,
+			@RequestParam("position") String position,
+			@RequestParam("nickname") String nickName,
+			@RequestParam("userId") String userId,
+			HttpSession session) {
+		// String userId = (String) session.getAttribute("userId");
+
+		if (userId == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 유효하지 않습니다.");
+		}
+		
+		// Nick Name 변경
+		service.changeNickname(userId, nickName);
+
+		// Position 변경
+		UserDto user = new UserDto();
+		user.setUserId(userId);
+		user.setPosition(position);
+		service.updatePosition(user);
+
+		try {
+			// 기존 기술 스택 삭제
+			service.deleteUserTechStack(userId);
+
+			// 새로운 기술 스택 추가
+			service.updateUserTechStack(userId, techStack);
+
+			return ResponseEntity.ok("프로필이 업데이트되었습니다.");
+		} catch (Exception e) {
+			// 예외 처리 로직 추가 (예: 로깅)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("프로필 업데이트를 실패하였습니다.");
+		}
+	}
 }
