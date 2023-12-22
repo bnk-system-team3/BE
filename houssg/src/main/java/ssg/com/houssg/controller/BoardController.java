@@ -53,37 +53,37 @@ public class BoardController {
 	}
 
 	@PostMapping("/saveStudyProjectBoard")
-	public ResponseEntity<?> saveStudyProjectBoard(@RequestBody BoardDto boardDto){
-			// 현재 날짜로 createDate 설정
-			System.out.println("1번");
-			boardDto.setCreateDate(new Date());
-			System.out.println("2번");
-			// 게시글 저장
-			service.saveBoard(boardDto);
-			System.out.println(boardDto.toString());
-			System.out.println("3번");
-			// 게시글 저장 후, 기술 스택 및 포지션 삽입
-			System.out.println(boardDto.getUserId());
-			int boardId = (int) service.findBoardId(boardDto.getUserId());
-			
-			System.out.println("Saved boardId: " + boardId);
-			// 기술 스택 삽입
-			
-			if (boardDto.getTechStack() != null) {
-		        for (String tech : boardDto.getTechStack()) {
-		            service.insertTechStack(boardId, tech);
-		        }
-		    }
+	public ResponseEntity<?> saveStudyProjectBoard(@RequestBody BoardDto boardDto) {
+		// 현재 날짜로 createDate 설정
+		System.out.println("1번");
+		boardDto.setCreateDate(new Date());
+		System.out.println("2번");
+		// 게시글 저장
+		service.saveBoard(boardDto);
+		System.out.println(boardDto.toString());
+		System.out.println("3번");
+		// 게시글 저장 후, 기술 스택 및 포지션 삽입
+		System.out.println(boardDto.getUserId());
+		int boardId = (int) service.findBoardId(boardDto.getUserId());
 
-		    if (boardDto.getPositions() != null) {
-		        for (String position : boardDto.getPositions()) {
-		            service.insertNeedPosition(boardId, position);
-		        }
-		    }
-			System.out.println("게시글 저장 및 기술 스택, 포지션 삽입 성공");
+		System.out.println("Saved boardId: " + boardId);
+		// 기술 스택 삽입
 
-			return ResponseEntity.ok().build(); // 게시글 저장 성공 응답
-		
+		if (boardDto.getTechStack() != null) {
+			for (String tech : boardDto.getTechStack()) {
+				service.insertTechStack(boardId, tech);
+			}
+		}
+
+		if (boardDto.getPositions() != null) {
+			for (String position : boardDto.getPositions()) {
+				service.insertNeedPosition(boardId, position);
+			}
+		}
+		System.out.println("게시글 저장 및 기술 스택, 포지션 삽입 성공");
+
+		return ResponseEntity.ok().build(); // 게시글 저장 성공 응답
+
 	}
 
 	// 게시글 수정
@@ -167,8 +167,8 @@ public class BoardController {
 
 	// 내가 참가중인 모임 조회
 	@GetMapping("/myBoards")
-	public ResponseEntity<List<BoardDto>> getMyProjects(HttpSession session) {
-		String userId = (String) session.getAttribute("userId");
+	public ResponseEntity<List<BoardDto>> getMyProjects(@RequestParam String userId) {
+//		String userId = (String) session.getAttribute("userId");
 		if (userId != null) {
 			List<BoardDto> myProjects = service.getMyProjects(userId);
 			return ResponseEntity.ok(myProjects);
@@ -216,16 +216,15 @@ public class BoardController {
 
 	@GetMapping("/getBoardDetails")
 	public ResponseEntity<?> getBoardDetails(@RequestParam int boardId) {
-	    // 게시글 상세 정보 및 기술 스택, 포지션 정보 조회
+		// 게시글 상세 정보 및 기술 스택, 포지션 정보 조회
 		service.incrementViewCount(boardId);
-	    Map<String, Object> boardDetails = service.getBoardDetails(boardId);
-	    
-	    if (boardDetails != null && !boardDetails.isEmpty()) {
-	        return ResponseEntity.ok(boardDetails);
-	    } else {
-	        return ResponseEntity.notFound().build();
-	    }
-	}
+		Map<String, Object> boardDetails = service.getBoardDetails(boardId);
 
+		if (boardDetails != null && !boardDetails.isEmpty()) {
+			return ResponseEntity.ok(boardDetails);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
 }

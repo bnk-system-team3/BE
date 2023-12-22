@@ -71,9 +71,22 @@
 
 	<!-- 홈 화면 모임 정보 조회 -->
 	<select id="getHomeBoardList" resultType="ssg.com.houssg.dto.BoardDto">
-		select boardId,
-		category, dueDate, title, userId, viewCnt
-		from board
+		SELECT
+		b.boardId,
+		b.category,
+		b.dueDate,
+		b.title,
+		b.userId,
+		b.viewCnt,
+		b.nickname,
+		p.positionName -- 추가된 부분: 포지션 이름
+		FROM
+		board b
+		JOIN
+		needposition np ON b.boardId = np.boardId
+		JOIN
+		positioncategory p ON np.positionId = p.positionId;
+
 	</select>
 
 
@@ -184,7 +197,8 @@
 
 	<!-- viewCnt 1 증가 -->
 	<update id="incrementViewCount" parameterType="int">
-		UPDATE board SET viewCnt = viewCnt + 1 WHERE boardId = #{boardId}
+		UPDATE board SET
+		viewCnt = viewCnt + 1 WHERE boardId = #{boardId}
 	</update>
 
 	<select id="selectNeedPosition" parameterType="java.lang.String"
